@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- DocumentIdentifier display names (ua.govstack.digitalwallet.app.wallet_core.documents.model.DocumentIdentifier) -->
+    <string name="eu_pid_doctype_name">National ID (PID)</string>
+    <string name="mdl_doctype_name">Mobile Driving Licence</string>
+    <string name="cor_doctype_name">CoR</string>
+    <string name="hiid_doctype_name">HIID</string>
+    <string name="msisdn_doctype_name">MSISDN</string>
+    <string name="age_over_18">Age over 18</string>
+    <string name="portrait">Portrait</string>
+
+    <!-- Document categories (DocumentCategory) -->
+    <string name="document_category_government">GOVERNMENT</string>
+    <string name="document_category_travel">TRAVEL</string>
+    <string name="document_category_finance">FINANCE</string>
+    <string name="document_category_education">EDUCATION</string>
+    <string name="document_category_health">HEALTH</string>
+    <string name="document_category_social_security">SOCIAL SECURITY</string>
+    <string name="document_category_retail">RETAIL</string>
+    <string name="document_category_other">OTHER</string>
+
+    <!-- Gender / boolean labels (WalletDocumentHelper, IssuedDocumentClaimHelper) -->
+    <string name="request_gender_not_known">Not known</string>
+    <string name="request_gender_male">Male</string>
+    <string name="request_gender_female">Female</string>
+    <string name="request_gender_not_applicable">Not applicable</string>
+    <string name="document_details_boolean_item_true_readable_value">yes</string>
+    <string name="document_details_boolean_item_false_readable_value">no</string>
+
+    <string name="doc_id_copied"><b>Number copied</b></string>
+
+    <!-- Deferred issuance copy (DeferredDocumentTransformer); merged into dependent modules R -->
+    <string name="dashboard_document_deferred_pending">Pending</string>
+    <string name="issuance_document_offer_default_issuer_name">Issuer</string>
+    <string name="issuance_add_document_deferred_success_title">In progress</string>
+    <string name="issuance_add_document_deferred_time_to_issue_title">Time to issue:</string>
+    <string name="issuance_add_document_deferred_time_to_issue_label">1-2 hours</string>
+
+    <string name="unrecognized_verifier">Unrecognized verifier</string>
+
+</resources>

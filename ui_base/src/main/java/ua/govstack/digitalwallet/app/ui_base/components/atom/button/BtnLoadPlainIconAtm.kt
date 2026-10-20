@@ -1,0 +1,224 @@
+package ua.govstack.digitalwallet.app.ui_base.components.atom.button
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.hideFromAccessibility
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
+import androidx.compose.ui.unit.dp
+import ua.govstack.digitalwallet.app.core.models.common_compose.atm.button.BtnLoadPlainIconAtm
+import ua.govstack.digitalwallet.app.core.models.common_compose.general.ButtonStates
+import ua.govstack.digitalwallet.app.ui_base.R
+import ua.govstack.digitalwallet.app.ui_base.components.DiiaResourceIcon
+import ua.govstack.digitalwallet.app.ui_base.components.conditional
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.DataActionWrapper
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.UIElementData
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.event.UIAction
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.event.UIActionKeysCompose
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.state.UIState
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.utils.resource.UiIcon
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.utils.resource.UiText
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.utils.resource.toDynamicString
+import ua.govstack.digitalwallet.app.ui_base.components.noRippleClickable
+import ua.govstack.digitalwallet.app.ui_base.components.subatomic.icon.UiIconWrapperSubatomic
+import ua.govstack.digitalwallet.app.ui_base.components.subatomic.loader.LoaderCircularEclipse23Subatomic
+import ua.govstack.digitalwallet.app.ui_base.components.theme.Black
+import ua.govstack.digitalwallet.app.ui_base.components.theme.DiiaTextStyle
+import ua.govstack.digitalwallet.app.ui_base.util.toDataActionWrapper
+
+
+@Composable
+fun BtnLoadPlainIconAtm(
+    modifier: Modifier = Modifier,
+    data: BtnLoadPlainIconAtmData,
+    progressIndicator: Pair<String, Boolean> = Pair("", false),
+    onUIAction: (UIAction) -> Unit
+) {
+    val context = LocalContext.current
+    Row(
+        modifier = modifier
+            .noRippleClickable {
+                if (data.interactionState == UIState.Interaction.Disabled ||
+                    (progressIndicator.first.isNotEmpty() && progressIndicator.first == data.id && progressIndicator.second)
+                ) return@noRippleClickable
+                onUIAction(
+                    UIAction(
+                        actionKey = data.actionKey,
+                        data = data.id,
+                        action = data.action
+                    )
+                )
+            }
+            .padding(16.dp)
+            .fillMaxWidth()
+            .conditional(data.interactionState == UIState.Interaction.Disabled) {
+                alpha(0.3f)
+            }
+            .semantics {
+                role = Role.Button
+            },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (progressIndicator.first == data.id && data.id.isNotEmpty() && progressIndicator.second) {
+            AnimatedVisibility(visible = true, enter = fadeIn(), exit = fadeOut()) {
+                LoaderCircularEclipse23Subatomic(modifier = Modifier.size(24.dp))
+
+            }
+        } else if (progressIndicator.first != data.id || !progressIndicator.second || data.id.isEmpty()) {
+            AnimatedVisibility(visible = true, enter = fadeIn(), exit = fadeOut()) {
+                UiIconWrapperSubatomic(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .semantics {
+                            hideFromAccessibility()
+                        },
+                    icon = data.icon
+                )
+            }
+        }
+        Spacer(modifier = Modifier.width(8.dp))
+        val label = data.label.asString()
+        Text(
+            modifier = Modifier
+                .semantics {
+                    if (data.action?.type == "offert_link") {
+                        contentDescription =
+                            "$label. ${context.getString(R.string.accessibility_open_in_new_window)}"
+                    }
+                },
+            text = label,
+            style = DiiaTextStyle.t2TextDescription,
+            color = Black
+        )
+    }
+}
+
+data class BtnLoadPlainIconAtmData(
+    val actionKey: String = UIActionKeysCompose.BTN_LOAD_PLAIN_ICON_ATM,
+    val componentId: UiText? = null,
+    val id: String,
+    val label: UiText,
+    val icon: UiIcon,
+    val action: DataActionWrapper? = null,
+    val interactionState: UIState.Interaction = UIState.Interaction.Enabled
+) : UIElementData
+
+fun BtnLoadPlainIconAtm.toUIModel(id: String? = null): BtnLoadPlainIconAtmData {
+    return BtnLoadPlainIconAtmData(
+        componentId = UiText.DynamicString(this.componentId.orEmpty()),
+        id = this.componentId ?: id ?: "",
+        label = label.toDynamicString(),
+        icon = UiIcon.DrawableResource(icon),
+        interactionState = when (this.state) {
+            ButtonStates.enabled -> UIState.Interaction.Enabled
+            ButtonStates.disabled -> UIState.Interaction.Disabled
+            ButtonStates.invisible -> UIState.Interaction.Disabled
+            else -> UIState.Interaction.Enabled
+        },
+        action = action?.toDataActionWrapper()
+    )
+}
+
+
+@Composable
+@Preview
+fun BtnLoadPlainIconAtm_Enabled() {
+    val data = BtnLoadPlainIconAtmData(
+        componentId = "component_id".toDynamicString(),
+        id = "id",
+        label = "Зареєструвати авто".toDynamicString(),
+        icon = UiIcon.DrawableResource(DiiaResourceIcon.INFO.code),
+        action = DataActionWrapper(
+            type = "register",
+            resource = "1234567890"
+        ),
+        interactionState = UIState.Interaction.Enabled
+    )
+    BtnLoadPlainIconAtm(data = data) {
+
+    }
+}
+
+@Composable
+@Preview
+fun BtnLoadPlainIconAtm_Disabled() {
+    val data = BtnLoadPlainIconAtmData(
+        componentId = "component_id".toDynamicString(),
+        id = "id",
+        label = "Зареєструвати авто".toDynamicString(),
+        icon = UiIcon.DrawableResource(DiiaResourceIcon.INFO.code),
+        action = DataActionWrapper(
+            type = "register",
+            resource = "1234567890"
+        ),
+        interactionState = UIState.Interaction.Disabled
+    )
+    BtnLoadPlainIconAtm(data = data) {
+
+    }
+}
+
+@Composable
+@Preview
+fun BtnLoadPlainIconAtm_Enabled_Long_Label() {
+    val data = BtnLoadPlainIconAtmData(
+        componentId = "component_id".toDynamicString(),
+        id = "id",
+        label = LoremIpsum(20).values.joinToString().toDynamicString(),
+        icon = UiIcon.DrawableResource(DiiaResourceIcon.INFO.code),
+        action = DataActionWrapper(
+            type = "register",
+            resource = "1234567890"
+        ),
+        interactionState = UIState.Interaction.Enabled
+    )
+    BtnLoadPlainIconAtm(data = data) {
+
+    }
+}
+
+@Composable
+@Preview
+fun BtnLoadPlainIconAtm_Enabled_Long_Label_Loading() {
+    val loadingState = remember {
+        mutableStateOf("id" to true)
+    }
+
+    val data = BtnLoadPlainIconAtmData(
+        componentId = "component_id".toDynamicString(),
+        id = "id",
+        label = LoremIpsum(20).values.joinToString().toDynamicString(),
+        icon = UiIcon.DrawableResource(DiiaResourceIcon.INFO.code),
+        action = DataActionWrapper(
+            type = "register",
+            resource = "1234567890"
+        ),
+        interactionState = UIState.Interaction.Enabled
+    )
+    BtnLoadPlainIconAtm(
+        data = data,
+        progressIndicator = loadingState.value,
+    ) {
+        loadingState.value = Pair("id", true)
+    }
+}

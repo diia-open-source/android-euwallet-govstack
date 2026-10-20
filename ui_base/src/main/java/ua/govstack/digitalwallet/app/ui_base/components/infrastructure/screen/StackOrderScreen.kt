@@ -1,0 +1,80 @@
+package ua.govstack.digitalwallet.app.ui_base.components.infrastructure.screen
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import ua.govstack.digitalwallet.app.ui_base.R
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.UIElementData
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.event.UIAction
+import ua.govstack.digitalwallet.app.ui_base.components.molecule.header.NavigationPanelMlc
+import ua.govstack.digitalwallet.app.ui_base.components.molecule.header.NavigationPanelMlcData
+import ua.govstack.digitalwallet.app.ui_base.components.molecule.message.PaginationMessageMlc
+import ua.govstack.digitalwallet.app.ui_base.components.molecule.message.PaginationMessageMlcData
+import ua.govstack.digitalwallet.app.ui_base.components.organism.header.TopGroupOrg
+import ua.govstack.digitalwallet.app.ui_base.components.organism.header.TopGroupOrgData
+import ua.govstack.digitalwallet.app.ui_base.components.organism.list.ListItemDragOrg
+import ua.govstack.digitalwallet.app.ui_base.components.organism.list.ListItemDragOrgData
+
+
+@Composable
+fun StackOrderScreen(
+    modifier: Modifier = Modifier,
+    toolbar: SnapshotStateList<UIElementData>,
+    body: SnapshotStateList<UIElementData>,
+    onUIAction: (UIAction) -> Unit,
+    onMove: (Int, Int) -> Unit,
+) {
+    Column(
+        modifier = modifier
+            .paint(
+                painterResource(id = R.drawable.bg_blue_yellow_gradient),
+                contentScale = ContentScale.FillBounds
+            )
+            .statusBarsPadding()
+            .navigationBarsPadding()
+    ) {
+        toolbar.forEach {
+            if (it is TopGroupOrgData) {
+                TopGroupOrg(
+                    modifier = modifier,
+                    data = it,
+                    onUIAction = onUIAction
+                )
+            }
+            if (it is NavigationPanelMlcData) {
+                NavigationPanelMlc(
+                    modifier = modifier
+                        .fillMaxWidth(),
+                    data = it,
+                    onUIAction = onUIAction
+                )
+            }
+        }
+
+        body.forEach {
+            if (it is ListItemDragOrgData) {
+                ListItemDragOrg(
+                    modifier = modifier.fillMaxHeight(),
+                    data = it,
+                    onMove = onMove,
+                    onUIAction = onUIAction
+                )
+            }
+            if (it is PaginationMessageMlcData) {
+                PaginationMessageMlc(
+                    modifier = modifier,
+                    data = it,
+                    onUIAction = onUIAction
+                )
+            }
+        }
+    }
+}

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login_screen_loading_test_tag">trident_loader_splash</string>
+</resources>

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Home</string>
+    <string name="scan_qr">Scan QR</string>
+    <string name="app_bar_title_empty"> </string>
+</resources>

@@ -1,0 +1,88 @@
+package ua.govstack.digitalwallet.app.context_menu.ui
+
+import android.app.Dialog
+import android.graphics.Color
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ua.govstack.digitalwallet.app.context_menu.R
+import ua.govstack.digitalwallet.app.core.models.ConsumableString
+import ua.govstack.digitalwallet.app.core.ui.dynamicdialog.ActionsConst
+import ua.govstack.digitalwallet.app.core.util.extensions.fragment.setNavigationResult
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.collectAsEffect
+import ua.govstack.digitalwallet.app.ui_base.components.organism.ContextMenuOrg
+import ua.govstack.digitalwallet.app.ui_base.fragments.BaseBottomDialog
+import ua.govstack.digitalwallet.app.ui_base.navigation.BaseNavigation
+
+class ContextMenuDF : BaseBottomDialog() {
+
+    private val viewModel: ContextMenuDVM by viewModels()
+    private var composeView: ComposeView? = null
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return super.onCreateDialog(savedInstanceState).apply {
+            setCanceledOnTouchOutside(true)
+            window?.setWindowAnimations(R.style.BottomDialogAnimation)
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        composeView = ComposeView(requireContext())
+        return composeView
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        (view?.parent as View).setBackgroundColor(Color.TRANSPARENT)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        composeView?.setContent {
+            viewModel.apply {
+                navigation.collectAsEffect {
+                    when (it) {
+                        is BaseNavigation.Back -> {
+                            dismissAllowingStateLoss()
+                        }
+
+                        is ContextMenuDVM.ContextMenuNavigation.NavigateByAction -> {
+                            dismissAllowingStateLoss()
+                            setNavigationResult(
+                                result = ConsumableString(it.action.getActionType()),
+                                key = ActionsConst.FRAGMENT_USER_ACTION_RESULT_KEY
+                            )
+                        }
+                    }
+                }
+            }
+
+            val data by viewModel.contextMenuOrgData.collectAsStateWithLifecycle()
+
+            data?.let { lData ->
+                ContextMenuOrg(
+                    modifier = Modifier,
+                    data = lData,
+                    onUIAction = viewModel::onUIAction
+                )
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        composeView = null
+    }
+
+}

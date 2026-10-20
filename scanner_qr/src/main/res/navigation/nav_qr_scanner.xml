@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_qr_scanner"
+    app:startDestination="@id/qrScanF">
+
+    <fragment
+        android:id="@+id/qrScanF"
+        android:name="ua.govstack.digitalwallet.app.scanner_qr.ui.QrScannerF"
+        android:label="QrScannerF" />
+
+</navigation>

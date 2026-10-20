@@ -1,0 +1,187 @@
+package ua.govstack.digitalwallet.app.pin.ui.create.confirm
+
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import ua.govstack.digitalwallet.app.core.ui.dynamicdialog.ActionsConst
+import ua.govstack.digitalwallet.app.core.util.delegation.WithErrorHandlingOnFlow
+import ua.govstack.digitalwallet.app.core.util.delegation.WithRetryLastAction
+import ua.govstack.digitalwallet.app.pin.R
+import ua.govstack.digitalwallet.app.pin.helper.PinHelper
+import ua.govstack.digitalwallet.app.pin.model.CreatePinFlowType
+import ua.govstack.digitalwallet.app.pin.util.AndroidClientAlertDialogsFactory
+import ua.govstack.digitalwallet.app.pin.util.AndroidClientAlertDialogsFactory.Companion.CONFIRM_PIN
+import ua.govstack.digitalwallet.app.ui_base.components.DiiaResourceIcon
+import ua.govstack.digitalwallet.app.ui_base.components.atom.icon.MiddleIconAtmData
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.UIElementData
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.event.UIAction
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.event.UIActionKeysCompose
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.findAndChangeFirstByInstance
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.navigation.NavigationPath
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.utils.TopPaddingMode
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.utils.resource.UiText
+import ua.govstack.digitalwallet.app.ui_base.components.molecule.header.NavigationPanelMlcV2Data
+import ua.govstack.digitalwallet.app.ui_base.components.molecule.text.SubTitleCentralizedMlcData
+import ua.govstack.digitalwallet.app.ui_base.components.molecule.text.TitleCentralizedMlcData
+import ua.govstack.digitalwallet.app.ui_base.components.organism.header.TopGroupOrgData
+import ua.govstack.digitalwallet.app.ui_base.components.organism.tile.NumButtonTileOrganismData
+import ua.govstack.digitalwallet.app.ui_base.navigation.BaseNavigation
+import javax.inject.Inject
+
+@HiltViewModel
+class ConfirmPinVM @Inject constructor(
+    private val pinHelper: PinHelper,
+    private val clientAlertDialogsFactory: AndroidClientAlertDialogsFactory,
+    private val errorHandling: WithErrorHandlingOnFlow,
+    private val retryLastAction: WithRetryLastAction
+) : ViewModel(), WithErrorHandlingOnFlow by errorHandling,
+    WithRetryLastAction by retryLastAction {
+
+    private var newPin: String = ""
+
+    private var tryCounter: Int = 0
+
+    val matchedPin = MutableLiveData<String>()
+
+    val flowType = MutableLiveData<CreatePinFlowType>()
+
+    private val _uiData = mutableStateListOf<UIElementData>()
+    val uiData: SnapshotStateList<UIElementData> = _uiData
+
+    private val _navigation = MutableSharedFlow<NavigationPath>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    val navigation = _navigation.asSharedFlow()
+
+    private val _accessibilityMessage = MutableStateFlow<Int?>(null)
+    val accessibilityMessage: StateFlow<Int?> = _accessibilityMessage
+
+    fun doInit(flowType: CreatePinFlowType, pin: String) {
+        this.flowType.value = flowType
+        setAuthFlowScreenContent(flowType, pin)
+    }
+
+
+    private fun setAuthFlowScreenContent(flowType: CreatePinFlowType, pin: String) {
+        newPin = pin
+        var title = R.string.confirm_screen_title_text
+        var descText = R.string.confirm_screen_description_text
+        val codeSize = 6
+        when (flowType) {
+            CreatePinFlowType.RESET_PIN -> {
+                title = R.string.pin_reset_confirm_title_text
+                descText = R.string.pin_reset_confirm_description_text
+            }
+
+            else -> {
+            }
+        }
+        _uiData.clear()
+        _uiData.add(
+            TopGroupOrgData(
+                navigationPanelMlcV2Data = NavigationPanelMlcV2Data(
+                    iconLeft = if (flowType == CreatePinFlowType.RESET_PIN) MiddleIconAtmData(
+                        code = DiiaResourceIcon.BACK.code
+                    ) else null,
+                    isClosed = true
+                )
+            )
+        )
+        _uiData.add(
+            TitleCentralizedMlcData(label = UiText.StringResource(title))
+        )
+        _uiData.add(
+            SubTitleCentralizedMlcData(label = UiText.StringResource(descText), paddingTop = TopPaddingMode.LARGE)
+        )
+        _uiData.add(
+            NumButtonTileOrganismData(
+                pinLength = codeSize,
+                componentId = UiText.StringResource(R.string.confirm_pin_screen_btn_num_test_tag),
+                componentIdEllipse = UiText.StringResource(R.string.confirm_pin_screen_ellips_test_tag)
+            )
+        )
+    }
+
+    fun onUIAction(uiAction: UIAction) {
+        when (uiAction.actionKey) {
+            UIActionKeysCompose.PIN_CREATED_NUM_BUTTON_ORGANISM -> {
+                val pin = uiAction.data ?: return
+                matchPinCodes(pin)
+            }
+
+            UIActionKeysCompose.PIN_CLEARED_NUM_BUTTON_ORGANISM -> {
+                _uiData.findAndChangeFirstByInstance<NumButtonTileOrganismData> {
+                    it.copy(clearWithShake = false)
+                }
+            }
+
+            UIActionKeysCompose.TOOLBAR_NAVIGATION_BACK -> {
+                _navigation.tryEmit(BaseNavigation.Back)
+            }
+
+            UIActionKeysCompose.TITLE_GROUP_MLC -> {
+                uiAction.action?.type.let {
+                    if (it == ActionsConst.ACTION_NAVIGATE_BACK) {
+                        _navigation.tryEmit(BaseNavigation.Back)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun matchPinCodes(pin: String) {
+        val isMatched = newPin == pin
+        if (!isMatched) {
+            tryCounter++
+            if (tryCounter >= MAX_TRY_COUNT) {
+                _navigation.tryEmit(BaseNavigation.Back)
+                return
+            }
+            _accessibilityMessage.value = R.string.accessibility_wrong_pin_try_again
+            _uiData.findAndChangeFirstByInstance<NumButtonTileOrganismData> {
+                it.copy(clearWithShake = true)
+            }
+        } else {
+            continueWithMatchedPin(pin)
+        }
+    }
+
+
+    fun clearAccessibilityMessage() {
+        _accessibilityMessage.value = null
+    }
+
+    private fun continueWithMatchedPin(pin: String) {
+        when (flowType.value) {
+            CreatePinFlowType.AUTHORIZATION -> {
+                if (pinHelper.isAlternativeAuthAvailable()) {
+                    _navigation.tryEmit(Navigation.ToAlternativeAuthSetup(pin))
+                } else {
+                    _navigation.tryEmit(Navigation.PinCreation(pin))
+                }
+            }
+
+            else -> {
+                showTemplateDialog(clientAlertDialogsFactory.showCustomAlert(CONFIRM_PIN))
+                matchedPin.value = pin
+            }
+        }
+    }
+
+    sealed class Navigation : NavigationPath {
+        data class ToAlternativeAuthSetup(val pin: String) : Navigation()
+        data class PinCreation(val pin: String) : Navigation()
+    }
+
+    private companion object {
+        const val MAX_TRY_COUNT = 3
+    }
+}

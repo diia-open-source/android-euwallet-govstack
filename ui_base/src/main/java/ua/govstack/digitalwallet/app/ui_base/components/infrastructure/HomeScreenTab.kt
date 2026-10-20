@@ -1,0 +1,90 @@
+package ua.govstack.digitalwallet.app.ui_base.components.infrastructure
+
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import ua.govstack.digitalwallet.app.core.util.state.Loader
+import ua.govstack.digitalwallet.app.core.util.state.getLegacyContentLoaded
+import ua.govstack.digitalwallet.app.core.util.state.getLegacyProgress
+import ua.govstack.digitalwallet.app.ui_base.components.conditional
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.event.UIAction
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.event.UIActionKeysCompose
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.screen.BottomBarRootContainer
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.screen.ComposeHomeTabRoot
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.screen.TabBodyRootContainer
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.screen.TabBodyRootLazyContainer
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.screen.TopBarRootContainer
+import ua.govstack.digitalwallet.app.ui_base.components.provideTestTagsAsResourceId
+import ua.govstack.digitalwallet.app.ui_base.mappers.loader.mapToLoader
+
+@Composable
+fun HomeScreenTab(
+    modifier: Modifier = Modifier,
+    loader: Loader? = null,
+    contentLoaded: Pair<String, Boolean> = Pair("", true),
+    progressIndicator: Pair<String, Boolean> = Pair("", true),
+    connectivityState: Boolean = true,
+    topBar: SnapshotStateList<UIElementData>? = null,
+    body: SnapshotStateList<UIElementData>,
+    bottom: SnapshotStateList<UIElementData>? = null,
+    useNestedScrollBody: Boolean = false,
+    onEvent: (UIAction) -> Unit
+) {
+    BackHandler {
+        onEvent(UIAction(actionKey = UIActionKeysCompose.TOOLBAR_NAVIGATION_BACK))
+    }
+    ComposeHomeTabRoot(
+        modifier = modifier
+            .background(Color.Transparent)
+            .provideTestTagsAsResourceId(),
+        loader = loader ?: mapToLoader(progress = progressIndicator, content = contentLoaded),
+        topBar = {
+            if (topBar != null) {
+                TopBarRootContainer(
+                    modifier = Modifier.statusBarsPadding(),
+                    topBarViews = topBar,
+                    onUIAction = onEvent
+                )
+            }
+        },
+        body = {
+            if (useNestedScrollBody) {
+                TabBodyRootLazyContainer(
+                    modifier = Modifier.conditional(topBar.isNullOrEmpty()) {
+                        statusBarsPadding()
+                    },
+                    bodyViews = body,
+                    contentLoaded = loader?.getLegacyContentLoaded() ?: contentLoaded,
+                    progressIndicator = loader?.getLegacyProgress() ?: progressIndicator,
+                    onUIAction = onEvent,
+                    connectivityState = connectivityState
+                )
+            } else {
+                TabBodyRootContainer(
+                    modifier = Modifier.conditional(topBar.isNullOrEmpty()) {
+                        statusBarsPadding()
+                    },
+                    bodyViews = body,
+                    contentLoaded = loader?.getLegacyContentLoaded() ?: contentLoaded,
+                    progressIndicator = loader?.getLegacyProgress() ?: progressIndicator,
+                    onUIAction = onEvent,
+                    connectivityState = connectivityState
+                )
+            }
+        },
+        bottom = {
+            if (bottom != null) {
+                BottomBarRootContainer(
+                    bottomViews = bottom,
+                    loader = loader ?: mapToLoader(progressIndicator, contentLoaded),
+                    onUIAction = onEvent
+                )
+            }
+        },
+        onEvent = onEvent
+    )
+}

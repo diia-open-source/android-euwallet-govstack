@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main">
+
+    <action
+        android:id="@+id/action_global_destination_systemDialog"
+        app:destination="@id/destination_systemDialog" />
+
+    <action
+        android:id="@+id/action_global_destination_contextMenu"
+        app:destination="@id/nav_context_menu">
+        <argument
+            android:name="items"
+            app:argType="ua.govstack.digitalwallet.app.core.models.ContextMenuField[]" />
+    </action>
+
+    <action
+        android:id="@+id/action_global_to_system_dialog"
+        app:destination="@+id/nav_system_dialog">
+        <argument
+            android:name="dialog"
+            app:argType="ua.govstack.digitalwallet.app.core.models.SystemDialog" />
+    </action>
+
+    <action
+        android:id="@+id/action_global_to_template_dialog"
+        app:destination="@id/nav_template_dialog">
+        <argument
+            android:name="dialog"
+            app:argType="ua.govstack.digitalwallet.app.core.models.dialogs.TemplateDialogModel" />
+        <argument
+            android:name="arbitaryDestinationId"
+            android:defaultValue="-1"
+            app:argType="integer" />
+    </action>
+
+    <action
+        android:id="@+id/action_global_to_QrScanF"
+        app:destination="@id/nav_qr_scanner"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right"
+        app:popUpToInclusive="true"/>
+
+    <action
+        android:id="@+id/action_global_diiaIdPinSetUp"
+        app:destination="@+id/diiaIdPinSetUp" />
+
+    <action
+        android:id="@+id/action_global_destination_pinInput"
+        app:destination="@id/nav_pin_input" >
+        <argument
+            android:name="verification"
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </action>
+
+    <action
+        android:id="@+id/action_global_to_setupBiometric"
+        app:destination="@id/nav_biometric"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right">
+
+        <argument
+            android:name="resultDestinationId"
+            app:argType="integer" />
+
+        <argument
+            android:name="resultKey"
+            app:argType="string" />
+
+        <argument
+            android:name="pin"
+            app:argType="string" />
+
+    </action>
+
+    <action
+        android:id="@+id/action_homeF_to_settingsF"
+        app:destination="@id/settingsF"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right" />
+
+    <fragment
+        android:id="@+id/settingsF"
+        android:name="ua.govstack.digitalwallet.app.opensource.ui.fragments.settings.SettingsF"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_settingsF_to_destination_resetPin"
+            app:destination="@id/nav_pin_reset">
+            <argument
+                android:name="resultDestination"
+                app:argType="integer" />
+            <argument
+                android:name="resultKey"
+                app:argType="string" />
+        </action>
+    </fragment>
+
+    <action
+        android:id="@+id/action_global_to_stack_order"
+        app:destination="@id/nav_stack_order"
+        app:enterAnim="@anim/anim_fade_in"
+        app:exitAnim="@anim/anim_fade_out"
+        app:popEnterAnim="@anim/anim_fade_in"
+        app:popExitAnim="@anim/anim_fade_out">
+    </action>
+
+    <action
+        android:id="@+id/action_global_destination_docActionsCompose"
+        app:destination="@id/nav_doc_actions">
+        <argument
+            android:name="doc"
+            app:argType="android.os.Parcelable" />
+        <argument
+            android:name="position"
+            android:defaultValue="-1"
+            app:argType="integer" />
+        <argument
+            android:name="enableStackActions"
+            android:defaultValue="true"
+            app:argType="boolean" />
+        <argument
+            android:name="currentlyDisplayedOdcTypes"
+            android:defaultValue="*"
+            app:argType="string" />
+        <argument
+            android:name="manualDocs"
+            android:defaultValue="@null"
+            app:argType="ua.govstack.digitalwallet.app.core.models.document.ManualDocs"
+            app:nullable="true" />
+        <argument
+            android:name="resultDestinationId"
+            app:argType="integer" />
+    </action>
+
+    <dialog
+        android:id="@+id/destination_systemDialog"
+        android:name="ua.govstack.digitalwallet.app.opensource.ui.fragments.dialogs.system.SystemDialog">
+        <argument
+            android:name="resultKey"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="dialog"
+            app:argType="ua.govstack.digitalwallet.app.core.models.common.template_dialogs.SystemDialogData" />
+    </dialog>
+
+    <action
+        android:id="@+id/action_homeF_to_sharingF"
+        app:destination="@id/nav_sharing"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right">
+
+        <argument
+            android:name="presentationLink"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+    </action>
+
+    <action
+        android:id="@+id/action_homeF_to_transactionF"
+        app:destination="@id/nav_transactions"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right">
+    </action>
+
+    <action
+        android:id="@+id/action_homeF_to_documentOfferF"
+        app:destination="@id/nav_document_offer"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right">
+
+        <argument
+            android:name="linkToProcess"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+    </action>
+
+    <action
+        android:id="@+id/action_homeF_to_documentOfferConfirmationF"
+        app:destination="@id/nav_document_offer"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right">
+
+        <argument
+            android:name="linkToProcess"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+    </action>
+
+    <action
+        android:id="@+id/action_qrScanF_to_sharingF"
+        app:destination="@id/nav_sharing"
+        app:popUpToInclusive="true">
+        <argument
+            android:name="presentationLink"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+    </action>
+
+    <action
+        android:id="@+id/action_qrScanF_to_DocumentOfferF"
+        app:destination="@id/nav_document_offer"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right">
+
+        <argument
+            android:name="linkToProcess"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+    </action>
+
+    <action
+        android:id="@+id/action_homeF_to_addDocument"
+        app:destination="@id/nav_add_document"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right">
+    </action>
+
+    <include app:graph="@navigation/nav_home" />
+    <include app:graph="@navigation/nav_biometric" />
+    <include app:graph="@navigation/nav_error" />
+    <include app:graph="@navigation/nav_login" />
+    <include app:graph="@navigation/nav_pin_create" />
+    <include app:graph="@navigation/nav_pin_input" />
+    <include app:graph="@navigation/nav_pin_reset" />
+    <include app:graph="@navigation/nav_template_dialog" />
+    <include app:graph="@navigation/nav_menu_actions" />
+    <include app:graph="@navigation/nav_system_dialog" />
+    <include app:graph="@navigation/nav_doc_actions" />
+    <include app:graph="@navigation/nav_doc_full_info" />
+    <include app:graph="@navigation/nav_stack_order" />
+    <include app:graph="@navigation/nav_context_menu" />
+    <include app:graph="@navigation/nav_qr_scanner" />
+    <include app:graph="@navigation/nav_transactions"/>
+    <include app:graph="@navigation/nav_sharing" />
+    <include app:graph="@navigation/nav_document_offer" />
+    <include app:graph="@navigation/nav_add_document" />
+
+</navigation>

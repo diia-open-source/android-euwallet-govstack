@@ -1,0 +1,179 @@
+package ua.govstack.digitalwallet.app.pin.ui.create.confirm
+
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import app.cash.turbine.test
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
+import org.junit.runners.Parameterized.Parameters
+import org.mockito.Mock
+import org.mockito.MockitoAnnotations
+import ua.govstack.digitalwallet.app.core.models.dialogs.TemplateDialogButton
+import ua.govstack.digitalwallet.app.core.models.dialogs.TemplateDialogData
+import ua.govstack.digitalwallet.app.core.models.dialogs.TemplateDialogModel
+import ua.govstack.digitalwallet.app.core.ui.dynamicdialog.ActionsConst
+import ua.govstack.digitalwallet.app.core.util.delegation.WithRetryLastAction
+import ua.govstack.digitalwallet.app.pin.helper.PinHelper
+import ua.govstack.digitalwallet.app.pin.model.CreatePinFlowType
+import ua.govstack.digitalwallet.app.pin.rules.MainDispatcherRule
+import ua.govstack.digitalwallet.app.pin.util.AndroidClientAlertDialogsFactory
+import ua.govstack.digitalwallet.app.pin.util.AndroidClientAlertDialogsFactory.Companion.CONFIRM_PIN
+import ua.govstack.digitalwallet.app.pin.utils.StubErrorHandlerOnFlow
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.event.UIAction
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.event.UIActionKeysCompose
+import ua.govstack.digitalwallet.app.ui_base.components.molecule.text.TextLabelMlcData
+import ua.govstack.digitalwallet.app.ui_base.components.organism.header.TopGroupOrgData
+import ua.govstack.digitalwallet.app.ui_base.components.organism.tile.NumButtonTileOrganismData
+
+@RunWith(Parameterized::class)
+class ConfirmPinVMTest(
+    private val flowType: CreatePinFlowType
+) {
+
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @Mock
+    private lateinit var alertDialogsFactory: AndroidClientAlertDialogsFactory
+
+    @Mock
+    private lateinit var retryLastAction: WithRetryLastAction
+
+    @Mock
+    private lateinit var pinHelper: PinHelper
+
+    private lateinit var viewModel: ConfirmPinVM
+
+    @Before
+    fun setUp() {
+        MockitoAnnotations.openMocks(this)
+        viewModel = ConfirmPinVM(
+            pinHelper = pinHelper,
+            clientAlertDialogsFactory = alertDialogsFactory,
+            errorHandling = StubErrorHandlerOnFlow(),
+            retryLastAction = retryLastAction
+        )
+        viewModel.doInit(flowType, "1234")
+        whenever(alertDialogsFactory.showCustomAlert(CONFIRM_PIN)).doReturn(template())
+    }
+
+    @Test
+    fun `initial state`() = runTest {
+        val snapshot = viewModel.uiData.toList()
+        Assert.assertEquals(3, snapshot.size)
+        Assert.assertTrue(snapshot[0] is TopGroupOrgData)
+        Assert.assertTrue(snapshot[1] is TextLabelMlcData)
+        Assert.assertTrue(snapshot[2] is NumButtonTileOrganismData)
+    }
+
+    @Test
+    fun `valid pin confirmation`() = runTest {
+        whenever(pinHelper.isAlternativeAuthAvailable()).thenReturn(false)
+        if (flowType == CreatePinFlowType.AUTHORIZATION) {
+            viewModel.navigation.test {
+                viewModel.onUIAction(
+                    UIAction(
+                        actionKey = UIActionKeysCompose.PIN_CREATED_NUM_BUTTON_ORGANISM,
+                        data = "1234"
+                    )
+                )
+                val nav = awaitItem() as ConfirmPinVM.Navigation.PinCreation
+                Assert.assertEquals("1234", nav.pin)
+            }
+        } else {
+            viewModel.showTemplateDialog.test {
+                viewModel.onUIAction(
+                    UIAction(
+                        actionKey = UIActionKeysCompose.PIN_CREATED_NUM_BUTTON_ORGANISM,
+                        data = "1234"
+                    )
+                )
+                Assert.assertEquals(template(), awaitItem().getContentIfNotHandled())
+            }
+        }
+        val item = viewModel.uiData.firstNotNullOf { it as? NumButtonTileOrganismData }
+        Assert.assertFalse(item.clearWithShake)
+    }
+
+    @Test
+    fun `valid pin confirmation with alt`() = runTest {
+        whenever(pinHelper.isAlternativeAuthAvailable()).thenReturn(true)
+        when (flowType) {
+            CreatePinFlowType.AUTHORIZATION -> viewModel.navigation.test {
+                viewModel.onUIAction(
+                    UIAction(
+                        actionKey = UIActionKeysCompose.PIN_CREATED_NUM_BUTTON_ORGANISM,
+                        data = "1234"
+                    )
+                )
+                val nav = awaitItem() as ConfirmPinVM.Navigation.ToAlternativeAuthSetup
+                Assert.assertEquals("1234", nav.pin)
+            }
+            else -> viewModel.showTemplateDialog.test {
+                viewModel.onUIAction(
+                    UIAction(
+                        actionKey = UIActionKeysCompose.PIN_CREATED_NUM_BUTTON_ORGANISM,
+                        data = "1234"
+                    )
+                )
+                Assert.assertEquals(template(), awaitItem().getContentIfNotHandled())
+            }
+        }
+        val item = viewModel.uiData.firstNotNullOf { it as? NumButtonTileOrganismData }
+        Assert.assertFalse(item.clearWithShake)
+    }
+
+    @Test
+    fun `invalid pin confirmation`() = runTest {
+        viewModel.onUIAction(
+            UIAction(
+                actionKey = UIActionKeysCompose.PIN_CREATED_NUM_BUTTON_ORGANISM,
+                data = "5655"
+            )
+        )
+        val item = viewModel.uiData.firstNotNullOf { it as? NumButtonTileOrganismData }
+        Assert.assertTrue(item.clearWithShake)
+    }
+
+    @Test
+    fun `pin cleared`() = runTest {
+        viewModel.onUIAction(UIAction(UIActionKeysCompose.PIN_CLEARED_NUM_BUTTON_ORGANISM))
+        val data = viewModel.uiData.firstNotNullOf { it as? NumButtonTileOrganismData }
+        Assert.assertFalse(data.clearWithShake)
+    }
+
+    companion object {
+
+        @JvmStatic
+        @Parameters
+        fun parameters() = CreatePinFlowType.entries.toTypedArray()
+
+        private fun template() =
+            TemplateDialogModel(
+                key = ActionsConst.FRAGMENT_USER_ACTION_RESULT_KEY,
+                type = "",
+                isClosable = false,
+                data = TemplateDialogData(
+                    icon = null,
+                    title = "",
+                    description = null,
+                    mainButton = TemplateDialogButton(
+                        name = null,
+                        icon = null,
+                        action = ""
+                    ),
+                    alternativeButton = null
+                )
+            )
+
+    }
+}

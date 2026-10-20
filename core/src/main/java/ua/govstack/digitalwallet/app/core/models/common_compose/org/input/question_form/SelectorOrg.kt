@@ -1,0 +1,32 @@
+package ua.govstack.digitalwallet.app.core.models.common_compose.org.input.question_form
+
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
+data class SelectorOrg(
+    @Json(name = "componentId")
+    val componentId: String? = null,
+    @Json(name = "id")
+    val id: String?,
+    @Json(name = "inputCode")
+    val inputCode: String?,
+    @Json(name = "blocker")
+    val blocker: Boolean?,
+    @Json(name = "mandatory")
+    val mandatory: Boolean?,
+    @Json(name = "label")
+    val label: String,
+    @Json(name = "placeholder")
+    val placeholder: String,
+    @Json(name = "hint")
+    val hint: String?,
+    @Json(name = "value")
+    val value: String?,
+    @Json(name = "valueId")
+    val valueId: String?,
+    @Json(name = "isEnabled")
+    val isEnabled: Boolean?,
+    @Json(name = "selectorListWidgetOrg")
+    val selectorListWidgetOrg: SelectorListWidgetOrg?
+)

@@ -1,0 +1,20 @@
+package ua.govstack.digitalwallet.app.core.models.common_compose.org.header
+
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+import ua.govstack.digitalwallet.app.core.models.common_compose.mlc.header.NavigationPanelMlc
+import ua.govstack.digitalwallet.app.core.models.common_compose.mlc.header.NavigationPanelMlcV2
+import ua.govstack.digitalwallet.app.core.models.common_compose.mlc.header.TitleGroupMlc
+import ua.govstack.digitalwallet.app.core.models.common_compose.org.chip.ChipTabsOrg
+
+@JsonClass(generateAdapter = true)
+data class TopGroupOrg(
+    @Json(name = "chipTabsOrg")
+    val chipTabsOrg: ChipTabsOrg?,
+    @Json(name = "navigationPanelMlc")
+    val navigationPanelMlc: NavigationPanelMlc?,
+    @Json(name = "titleGroupMlc")
+    val titleGroupMlc: TitleGroupMlc?,
+    @Json(name = "navigationPanelMlcV2")
+    val navigationPanelMlcV2: NavigationPanelMlcV2?,
+)

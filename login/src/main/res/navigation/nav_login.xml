@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_login"
+    app:startDestination="@id/destination_login">
+
+    <fragment
+        android:id="@+id/destination_login"
+        android:name="ua.govstack.digitalwallet.app.login.ui.LoginF">
+
+        <action
+            android:id="@+id/action_destination_login_to_homeF"
+            app:destination="@id/nav_home"
+            app:enterAnim="@anim/anim_fade_in"
+            app:exitAnim="@anim/anim_fade_out"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/anim_fade_in"
+            app:popExitAnim="@anim/anim_fade_out"
+            app:popUpTo="@+id/destination_login"
+            app:popUpToInclusive="true">
+
+            <argument
+                android:name="launchFlow"
+                android:defaultValue="@null"
+                app:argType="ua.govstack.digitalwallet.app.core.models.ConsumableString"
+                app:nullable="true" />
+
+        </action>
+
+        <action
+            android:id="@+id/action_login_to_createPin"
+            app:destination="@id/nav_pin_create">
+            <argument
+                android:name="resultDestinationId"
+                app:argType="integer" />
+            <argument
+                android:name="resultKey"
+                app:argType="string" />
+            <argument
+                android:name="flowType"
+                app:argType="ua.govstack.digitalwallet.app.pin.model.CreatePinFlowType" />
+        </action>
+
+    </fragment>
+
+</navigation>

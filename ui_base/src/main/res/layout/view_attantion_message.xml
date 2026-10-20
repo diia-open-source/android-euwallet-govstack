@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:background="@drawable/back_penalties_paid"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/emoji"
+            style="@style/TextSizeEmoji"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/large"
+            android:layout_marginTop="@dimen/large"
+            android:layout_marginBottom="@dimen/large"
+            android:focusable="false"
+            android:importantForAccessibility="no"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            tools:text="@string/emoji_ok" />
+
+        <TextView
+            android:id="@+id/info_title"
+            style="@style/LineExtraText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="@dimen/large"
+            android:layout_marginEnd="@dimen/large"
+            android:focusable="false"
+            android:importantForAccessibility="no"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/emoji"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="У вас Все добре" />
+
+        <TextView
+            android:id="@+id/info_text"
+            style="@style/LineText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="@dimen/large"
+            android:layout_marginBottom="@dimen/large"
+            android:focusable="false"
+            android:importantForAccessibility="no"
+            android:lineSpacingExtra="4sp"
+            android:textColorHighlight="@android:color/transparent"
+            android:textColorLink="@color/colorAccent"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/info_link"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/emoji"
+            app:layout_constraintTop_toBottomOf="@+id/info_title"
+            app:layout_goneMarginTop="@dimen/large"
+            tools:text="Оберіть громаду до якої ви алежите, щоб знайти або підтримати петицію.Оберіть громаду до якої ви алежите, щоб знайти або підтримати петицію.Оберіть громаду до якої ви алежите, щоб знайти або підтримати петицію."
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/info_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="@dimen/large"
+            android:clickable="true"
+            android:focusable="true"
+            android:importantForAccessibility="yes"
+            android:textColor="@color/colorAccent"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/emoji"
+            app:layout_constraintTop_toBottomOf="@+id/info_text"
+            tools:text="Перелік таких територій" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</merge>

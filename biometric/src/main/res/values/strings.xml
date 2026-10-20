@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="touch_id_for_diia">Sign in with biometrics</string>
+    <string name="use_touch_id">Touch the sensor to sign in</string>
+    <string name="use_face_id">Scan your face to sign in</string>
+    <string name="biometric_cancel">Cancel</string>
+
+    <!-- Authorization. Biometric screen -->
+    <string name="biometric_screen_title_text">Allow sign-in with biometrics</string>
+    <string name="biometric_screen_button_text">Allow</string>
+    <string name="biometric_screen_description_text">Use biometrics to sign in</string>
+    <string name="biometric_screen_alt_button_text">Maybe later</string>
+
+    <string name="biometric_screen_title_test_tag">title_touchid_permission</string>
+    <string name="biometric_screen_icon_test_tag">icon</string>
+    <string name="biometric_screen_btn_allow_test_tag">btn_allow_touchid_permission</string>
+    <string name="biometric_screen_btn_later__test_tag">btn_later_touchid_permission</string>
+</resources>

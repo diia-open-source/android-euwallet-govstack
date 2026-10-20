@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Authorization. Pin input screen -->
+    <string name="pin_input_title_text">Sign-in code</string>
+    <string name="pin_input_description_text">I forgot my sign-in code</string>
+
+    <!-- Authorization. Create pin screen -->
+    <string name="create_screen_title_text">Create a 6-digit code</string>
+    <string name="create_screen_description_text">You’ll use this code to\nsign in to the app</string>
+
+    <string name="confirm_screen_title_text">Re-enter the 6-digit code</string>
+    <string name="confirm_screen_description_text">Make sure you entered it correctly\nand can remember it</string>
+
+    <!-- Authorization. Reset pin screen -->
+    <string name="pin_reset_title_text">Enter your current\n6-digit code</string>
+    <string name="pin_reset_description_text">To confirm your identity before changing the sign-in code</string>
+
+    <string name="pin_reset_create_title_text">Create a 6-digit code</string>
+    <string name="pin_reset_create_description_text">You’ll use this code to\nsign in to the app</string>
+
+    <string name="pin_reset_confirm_title_text">Re-enter the 6-digit code</string>
+    <string name="pin_reset_confirm_description_text">Make sure you entered it correctly\nand can remember it</string>
+
+    <string name="accessibility_wrong_pin_try_again">The password you entered is incorrect. Please try again.</string>
+
+    <string name="forgot_pin_dialog_title">Forgot your sіgn-in code?</string>
+    <string name="forgot_pin_dialog_desc">If you log out, all documents will be removed. You’ll need to re-authorize to add them again.</string>
+    <string name="forgot_pin_dialog_accept_btn">Log out</string>
+    <string name="forgot_pin_dialog_cancel_btn">Cancel</string>
+
+</resources>

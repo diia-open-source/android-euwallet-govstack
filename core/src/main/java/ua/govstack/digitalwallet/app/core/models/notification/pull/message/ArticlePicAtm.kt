@@ -1,0 +1,15 @@
+package ua.govstack.digitalwallet.app.core.models.notification.pull.message
+
+
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
+data class ArticlePicAtm(
+    @Json(name = "image")
+    val image: String?,
+    @Json(name = "accessibilityDescription")
+    val accessibilityDescription: String?,
+    @Json(name = "componentId")
+    val componentId: String?
+)

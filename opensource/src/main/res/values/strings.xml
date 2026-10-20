@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Diia GovStack Wallet</string>
+
+    <string name="check_docs_no_internet_message">No internet connection. Check your connection and try again</string>
+    <string name="check_docs_no_registry_message">No access to the registry</string>
+    <string name="qr_code_not_registered">This QR code is not registered in Diia</string>
+    <string name="check_doc_error_cert">"Certificate validation error"</string>
+    <string name="check_doc_expired_error_cert">The certificate is invalid. It has been revoked.</string>
+    <string name="check_doc_error_timeout">The QR validation session has expired or is invalid</string>
+    <string name="check_doc_http_timeout">Could not load the document for verification</string>
+    <string name="qr_check_subtitle_checking_docs">Checking documents</string>
+    <string name="check_doc_error_not_found">A document with this QR code does not exist</string>
+
+    <string name="dl_no_photo_title">There is no photo in the registry 😔</string>
+    <string name="dl_to_e_queue">Register in the electronic queue to add or update your photo.</string>
+    <string name="dl_outdated_title">You have an old document 😔</string>
+    <string name="dl_outdated_description">Register in the electronic queue to update it and add it to the app.</string>
+    <string name="dl_need_verify_title">Your document needs verification 😔</string>
+    <string name="dl_need_verify_queue">Please visit the nearest police service center.</string>
+    <string name="dl_expiration_title">Your driving licence has expired 😔</string>
+    <string name="dl_expiration_description">You can obtain a new driving licence and remove this document.</string>
+    <string name="dl_revoked_title">Document expired or revoked</string>
+    <string name="dl_revoked_description">This document has expired or has been revoked. You can generate a new document.</string>
+
+    <string name="settings_options_label">Settings</string>
+    <string name="settings_change_code_label">Change sign-in code</string>
+    <string name="settings_doc_stack_label">Change the order of documents</string>
+    <string name="settings_allow_biometrics_label">Allow biometrics</string>
+</resources>

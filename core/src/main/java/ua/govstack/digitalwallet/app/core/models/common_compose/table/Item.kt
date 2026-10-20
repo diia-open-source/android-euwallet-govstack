@@ -1,0 +1,32 @@
+package ua.govstack.digitalwallet.app.core.models.common_compose.table
+
+import android.os.Parcelable
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+import kotlinx.parcelize.Parcelize
+import ua.govstack.digitalwallet.app.core.models.common.message.AttentionIconMessageMlc
+import ua.govstack.digitalwallet.app.core.models.common_compose.atm.button.BtnLinkAtm
+import ua.govstack.digitalwallet.app.core.models.common_compose.mlc.text.SmallEmojiPanelMlc
+
+@Parcelize
+@JsonClass(generateAdapter = true)
+data class Item(
+    @Json(name = "docTableItemHorizontalLongerMlc")
+    val docTableItemHorizontalLongerMlc: TableItemHorizontalMlc? = null,
+    @Json(name = "docTableItemHorizontalMlc")
+    val docTableItemHorizontalMlc: TableItemHorizontalMlc? = null,
+    @Json(name = "tableItemHorizontalMlc")
+    val tableItemHorizontalMlc: TableItemHorizontalMlc? = null,
+    @Json(name = "tableItemPrimaryMlc")
+    val tableItemPrimaryMlc: TableItemPrimaryMlc? = null,
+    @Json(name = "tableItemVerticalMlc")
+    val tableItemVerticalMlc: TableItemVerticalMlc? = null,
+    @Json(name = "smallEmojiPanelMlc")
+    val smallEmojiPanelMlc: SmallEmojiPanelMlc? = null,
+    @Json(name = "tableItemHorizontalLargeMlc")
+    val tableItemHorizontalLargeMlc: TableItemHorizontalLargeMlc? = null,
+    @Json(name = "attentionIconMessageMlc")
+    val attentionIconMessageMlc: AttentionIconMessageMlc? = null,
+    @Json(name = "btnLinkAtm")
+    val btnLinkAtm: BtnLinkAtm? = null
+) : Parcelable

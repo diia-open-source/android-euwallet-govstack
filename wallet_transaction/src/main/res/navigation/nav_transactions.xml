@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_transactions"
+    app:startDestination="@id/TransactionsF">
+
+    <fragment
+        android:id="@+id/TransactionsF"
+        android:name="ua.govstack.digitalwallet.app.wallet_transaction.ui.list.TransactionsF"
+        android:label="TransactionsF" >
+        <action
+            android:id="@+id/action_to_TransactionDetailsF"
+            app:destination="@id/TransactionDetailsF" >
+
+            <argument
+                android:name="transactionId"
+                app:argType="string" />
+
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/TransactionDetailsF"
+        android:name="ua.govstack.digitalwallet.app.wallet_transaction.ui.details.TransactionDetailsF"
+        android:label="TransactionDetailsF" />
+
+</navigation>

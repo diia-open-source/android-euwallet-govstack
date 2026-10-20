@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="transactions_title">Transaction log</string>
+    <string name="transactions_empty_title">No transactions yet</string>
+    <string name="transactions_empty_description">Your completed and pending transactions will appear here.</string>
+    <string name="transaction_document_unknown">Unknown</string>
+    <string name="transaction_document_deleted">Document Deleted</string>
+    <string name="transaction_data_shared">Data shared:</string>
+    <string name="transaction_data_issued">Data issued:</string>
+    <string name="transaction_document_not_found">Document details unavailable: this document is still processing or is no longer available.</string>
+    <string name="transaction_type_sharing">Sharing</string>
+    <string name="transaction_type_issuing">Issuing</string>
+    <string name="transaction_type_signing">Signing</string>
+    <string name="transaction_type_deleting">Deleting</string>
+    <string name="transaction_accessibility_expand_details">Expand details</string>
+    <string name="transaction_accessibility_collapse_details">Collapse details</string>
+</resources>

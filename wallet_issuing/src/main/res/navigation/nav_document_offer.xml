@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_document_offer"
+    app:startDestination="@id/DocumentOffer">
+
+    <fragment
+        android:id="@+id/DocumentOffer"
+        android:name="ua.govstack.digitalwallet.app.wallet_issuing.ui.documentOffer.DocumentOfferF"
+        android:label="DocumentOffer">
+        <argument
+            android:name="linkToProcess"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_DocumentOffer_to_PreAuthPinF"
+            app:popUpToInclusive="true"
+            app:destination="@id/PreAuthPinF" />
+    </fragment>
+    <fragment
+        android:id="@+id/PreAuthPinF"
+        android:name="ua.govstack.digitalwallet.app.wallet_issuing.ui.preAuthPin.PreAuthPinF"
+        android:label="PreAuthPinF">
+        <argument
+            android:name="linkToProcess"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+
+</navigation>

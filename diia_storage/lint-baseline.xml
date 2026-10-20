@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.9.1" type="baseline" client="gradle" dependencies="true" name="AGP (8.9.1)" variant="all" version="8.9.1">
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `toLowerCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
+        errorLine1="fun File.compressFormat() = when (extension.toLowerCase()) {"
+        errorLine2="                                            ~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/core/util/compression/impl/Util.kt"
+            line="25"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="SimpleDateFormat"
+        message="To get local formatting use `getDateInstance()`, `getDateTimeInstance()`, or `getTimeInstance()`, or use `new SimpleDateFormat(String template, Locale locale)` with for example `Locale.US` for ASCII dates."
+        errorLine1="    val sdf = SimpleDateFormat(&quot;dd-MM-yyyy&quot;)"
+        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/core/util/extensions/date_time/DateTimeExt.kt"
+            line="162"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="SimpleDateFormat"
+        message="To get local formatting use `getDateInstance()`, `getDateTimeInstance()`, or `getTimeInstance()`, or use `new SimpleDateFormat(String template, Locale locale)` with for example `Locale.US` for ASCII dates."
+        errorLine1="        val dateFormat = SimpleDateFormat(&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss.SSSZ&quot;)"
+        errorLine2="                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/core/util/extensions/date_time/DateTimeExt.kt"
+            line="210"
+            column="26"/>
+    </issue>
+
+    <issue
+        id="QueryPermissionsNeeded"
+        message="Consider adding a `&lt;queries>` declaration to your manifest when calling this method; see https://g.co/dev/packagevisibility for details"
+        errorLine1="            context?.packageManager?.queryIntentActivities("
+        errorLine2="                                     ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/core/util/extensions/fragment/FragmentSendPdfExt.kt"
+            line="93"
+            column="38"/>
+    </issue>
+
+    <issue
+        id="QueryPermissionsNeeded"
+        message="Consider adding a `&lt;queries>` declaration to your manifest when calling this method; see https://g.co/dev/packagevisibility for details"
+        errorLine1="            context?.packageManager?.queryIntentActivities("
+        errorLine2="                                     ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/core/util/extensions/fragment/FragmentSendPdfExt.kt"
+            line="98"
+            column="38"/>
+    </issue>
+
+    <issue
+        id="RestrictedApi"
+        message="NavDestination.getDisplayName can only be called from within the same library group (referenced groupId=`androidx.navigation` from groupId=`Diia.libs`)"
+        errorLine1="                &amp;&amp; currentBackStackEntry?.destination?.displayName == CommonConst.TEMPLATE_DIALOG_ID"
+        errorLine2="                                                       ~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/core/util/extensions/fragment/FragmentResultExt.kt"
+            line="32"
+            column="56"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; `SDK_INT` is always >= 26"
+        errorLine1="    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/core/util/extensions/context/ContextGlobalAppControlExt.kt"
+            line="12"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; `SDK_INT` is always >= 26"
+        errorLine1="            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/diia_storage/EncryptedAndroidKeyValueStore.kt"
+            line="88"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="Unnecessary; `SDK_INT` is always >= 26"
+        errorLine1="            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/diia_storage/EncryptedAndroidKeyValueStore.kt"
+            line="98"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="TypographyDashes"
+        message="Replace &quot;-&quot; with an &quot;en dash&quot; character (–, &amp;#8211;) ?"
+        errorLine1="    &lt;string name=&quot;phone_number_veteran_registry&quot;>0-800-505-217&lt;/string>"
+        errorLine2="                                                 ~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="144"
+            column="50"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/doc_shadow.png` in densityless folder">
+        <location
+            file="src/main/res/drawable/doc_shadow.png"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/ic_checkbox_green_cempty19.png` in densityless folder">
+        <location
+            file="src/main/res/drawable/ic_checkbox_green_cempty19.png"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/ic_logo_diia_gerb.png` in densityless folder">
+        <location
+            file="src/main/res/drawable/ic_logo_diia_gerb.png"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/ic_radiobutton_green_checked19.png` in densityless folder">
+        <location
+            file="src/main/res/drawable/ic_radiobutton_green_checked19.png"/>
+    </issue>
+
+    <issue
+        id="IconLocation"
+        message="Found bitmap drawable `res/drawable/service_card_shadow.png` in densityless folder">
+        <location
+            file="src/main/res/drawable/service_card_shadow.png"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        getSharedPreferences().edit().remove(key.name).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/diia_storage/AndroidKeyValueStore.kt"
+            line="42"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="                getSharedPreferences().edit().putString(key.name, value.toString()).apply()"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/diia_storage/AndroidKeyValueStore.kt"
+            line="69"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        preferences.edit().clear().commit()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/diia_storage/AndroidKeyValueStore.kt"
+            line="81"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `String.toUri` instead?"
+        errorLine1="            data = Uri.parse(uri)"
+        errorLine2="                   ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/core/util/system/application/ApplicationLauncher.kt"
+            line="22"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `String.toUri` instead?"
+        errorLine1="            data = Uri.parse(uri)"
+        errorLine2="                   ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/core/util/system/application/ApplicationLauncher.kt"
+            line="22"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Bitmap.get` instead?"
+        errorLine1="            val currentPixel = bitmap.getPixel(x, y)"
+        errorLine2="                               ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/core/util/extensions/image_processing/BitmapExt.kt"
+            line="34"
+            column="32"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX function `createBitmap` instead?"
+        errorLine1="        val bmp = Bitmap.createBitmap(outputWidth, height, Bitmap.Config.ARGB_8888)"
+        errorLine2="                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/core/models/document/barcode/DocumentBarcodeFactory.kt"
+            line="78"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Bitmap.set` instead?"
+        errorLine1="                        bmp.setPixel(columnIndex, y, Color.BLACK)"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/core/models/document/barcode/DocumentBarcodeFactory.kt"
+            line="83"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="        sharedPreferences.edit().putString(PIN, pin).apply()"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/diia_storage/EncryptedAndroidKeyValueStore.kt"
+            line="39"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        errorLine1="            context.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit().clear().apply()"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/diia_storage/EncryptedAndroidKeyValueStore.kt"
+            line="86"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `String.toUri` instead?"
+        errorLine1="    val uri = Uri.parse(&quot;market://details?id=ua.govstack.digitalwallet.app.app&quot;)"
+        errorLine2="              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/core/util/extensions/fragment/FragmentActionsExt.kt"
+            line="33"
+            column="15"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `String.toUri` instead?"
+        errorLine1="                Uri.parse(&quot;http://play.google.com/store/apps/details?id=ua.govstack.digitalwallet.app.app&quot;)"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/core/util/extensions/fragment/FragmentActionsExt.kt"
+            line="47"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `String.toUri` instead?"
+        errorLine1="            setDataAndType(Uri.parse(fileUri), &quot;application/pdf&quot;)"
+        errorLine2="                           ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/core/util/extensions/fragment/FragmentSendPdfExt.kt"
+            line="90"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `String.toUri` instead?"
+        errorLine1="            intent.setDataAndType(Uri.parse(fileUri), null)"
+        errorLine2="                                  ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/core/util/extensions/fragment/FragmentSendPdfExt.kt"
+            line="104"
+            column="35"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        message="Use the KTX extension function `Int.toDrawable` instead?"
+        errorLine1="        return ColorDrawable(middleColor)"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/ua/gov/diia/core/util/GradientBuilder.kt"
+            line="43"
+            column="16"/>
+    </issue>
+
+</issues>

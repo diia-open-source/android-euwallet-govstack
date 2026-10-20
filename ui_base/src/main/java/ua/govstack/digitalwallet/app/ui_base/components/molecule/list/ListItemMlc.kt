@@ -1,0 +1,614 @@
+package ua.govstack.digitalwallet.app.ui_base.components.molecule.list
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import coil.compose.SubcomposeAsyncImage
+import ua.govstack.digitalwallet.app.core.models.common_compose.general.ButtonStates
+import ua.govstack.digitalwallet.app.core.models.common_compose.mlc.list.ListItemMlc
+import ua.govstack.digitalwallet.app.ui_base.R
+import ua.govstack.digitalwallet.app.ui_base.components.DiiaResourceIcon
+import ua.govstack.digitalwallet.app.ui_base.components.atom.status.ChipStatusAtm
+import ua.govstack.digitalwallet.app.ui_base.components.atom.status.ChipStatusAtmData
+import ua.govstack.digitalwallet.app.ui_base.components.atom.status.StatusChipType
+import ua.govstack.digitalwallet.app.ui_base.components.atom.status.toUiModel
+import ua.govstack.digitalwallet.app.ui_base.components.atom.text.AmountAtm
+import ua.govstack.digitalwallet.app.ui_base.components.atom.text.AmountAtmData
+import ua.govstack.digitalwallet.app.ui_base.components.atom.text.Color
+import ua.govstack.digitalwallet.app.ui_base.components.atom.text.textwithparameter.TextParameter
+import ua.govstack.digitalwallet.app.ui_base.components.atom.text.textwithparameter.TextParameter.Data
+import ua.govstack.digitalwallet.app.ui_base.components.atom.text.textwithparameter.TextWithParametersAtom
+import ua.govstack.digitalwallet.app.ui_base.components.atom.text.textwithparameter.TextWithParametersData
+import ua.govstack.digitalwallet.app.ui_base.components.atom.text.toUIModel
+import ua.govstack.digitalwallet.app.ui_base.components.conditional
+import ua.govstack.digitalwallet.app.ui_base.components.disableByInteractionState
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.DataActionWrapper
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.UIElementData
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.event.UIAction
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.event.UIActionKeysCompose
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.state.UIState
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.utils.resource.UiIcon
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.utils.resource.UiText
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.utils.resource.toDynamicString
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.utils.resource.toDynamicStringOrNull
+import ua.govstack.digitalwallet.app.ui_base.components.noRippleClickable
+import ua.govstack.digitalwallet.app.ui_base.components.organism.list.pagination.SimplePagination
+import ua.govstack.digitalwallet.app.ui_base.components.subatomic.icon.IconBase64Subatomic
+import ua.govstack.digitalwallet.app.ui_base.components.subatomic.loader.LoaderCircularEclipse23Subatomic
+import ua.govstack.digitalwallet.app.ui_base.components.subatomic.loader.LoaderCircularEclipseBlackIcon
+import ua.govstack.digitalwallet.app.ui_base.components.subatomic.preview.PreviewBase64Icons
+import ua.govstack.digitalwallet.app.ui_base.components.theme.Black
+import ua.govstack.digitalwallet.app.ui_base.components.theme.BlackAlpha54
+import ua.govstack.digitalwallet.app.ui_base.components.theme.DiiaTextStyle
+import ua.govstack.digitalwallet.app.ui_base.util.toDataActionWrapper
+
+@Composable
+fun ListItemMlc(
+    modifier: Modifier = Modifier,
+    data: ListItemMlcData,
+    progressIndicator: Pair<String, Boolean> = Pair("", false),
+    onUIAction: (UIAction) -> Unit
+) {
+    val context = LocalContext.current
+
+    var isLoading by remember {
+        mutableStateOf(
+            progressIndicator.first == data.id && progressIndicator.second
+        )
+    }
+
+    var isClickable by remember {
+        mutableStateOf(
+            data.interactionState != UIState.Interaction.Disabled || !isLoading
+        )
+    }
+
+    LaunchedEffect(key1 = progressIndicator) {
+        isLoading = progressIndicator.first == data.id && progressIndicator.second
+    }
+
+    LaunchedEffect(key1 = data.interactionState, key2 = isLoading) {
+        isClickable =
+            data.interactionState != UIState.Interaction.Disabled || !(isLoading)
+    }
+
+    val onClickData = UIAction(
+        actionKey = data.actionKey,
+        data = data.id,
+        action = data.action
+    )
+
+    Row(
+        modifier = modifier
+            .conditional(!isLoading) {
+                noRippleClickable(debounce = true) { onUIAction(onClickData) }
+            }
+            .disableByInteractionState(data.interactionState)
+            .testTag(data.componentId?.asString() ?: "")
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        data.logoLeft?.let {
+            when (it) {
+                is UiIcon.DrawableResInt -> {
+                    Image(
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .size(32.dp),
+                        painter = painterResource(
+                            id = it.res
+                        ),
+                        contentDescription = data.iconLeftContentDescription?.asString()
+                    )
+                }
+
+                is UiIcon.DrawableResource -> {
+                    Image(
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .size(32.dp),
+                        painter = painterResource(
+                            id = DiiaResourceIcon.getResourceId(it.code)
+                        ),
+                        contentDescription = data.iconLeftContentDescription?.asString()
+                    )
+                }
+
+                is UiIcon.DynamicIconBase64 -> {
+                    IconBase64Subatomic(
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .size(32.dp),
+                        base64Image = it.value,
+                        contentDescription = data.logoLeftContentDescription?.asString()
+                    )
+                }
+
+                else -> {
+
+                }
+            }
+        }
+        data.bigIconLeft?.let {
+            Image(
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .size(32.dp),
+                painter = painterResource(
+                    id = DiiaResourceIcon.getResourceId(it.code)
+                ),
+                contentDescription = data.iconLeftContentDescription?.asString()
+            )
+        }
+        data.leftLogoLink?.let { link ->
+            SubcomposeAsyncImage(
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .size(32.dp),
+                model = link,
+                contentDescription = null,
+                loading = {
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        LoaderCircularEclipseBlackIcon(
+                            modifier = Modifier
+                                .size(18.dp),
+                        )
+                    }
+                },
+                success = {
+                    Image(
+                        painter = painter,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop
+                    )
+                },
+                error = {
+                    Image(
+                        modifier = Modifier
+                            .size(32.dp),
+                        painter = painterResource(
+                            id = DiiaResourceIcon.getResourceId(DiiaResourceIcon.DEFAULT_GLOBAL.code)
+                        ),
+                        contentDescription = data.iconLeftContentDescription?.asString(),
+                        contentScale = ContentScale.Fit
+                    )
+                }
+            )
+        }
+        AnimatedVisibility(visible = isLoading) {
+            LoaderCircularEclipse23Subatomic(
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .size(24.dp)
+            )
+        }
+        AnimatedVisibility(visible = !isLoading) {
+            data.iconLeft?.let {
+                Image(
+                    modifier = Modifier
+                        .padding(end = 16.dp)
+                        .size(24.dp),
+                    painter = painterResource(
+                        id = DiiaResourceIcon.getResourceId(it.code)
+                    ),
+                    contentDescription = data.iconLeftContentDescription?.asString()
+                )
+            }
+        }
+        Column(
+            modifier = Modifier
+                .weight(1f)
+        ) {
+            val label = data.label.asString()
+            val contentDesc = (data.accessibilityDescription?.asString() ?: label)
+                .replace(
+                    context.getString(R.string.accessibility_short_region),
+                    context.getString(R.string.accessibility_full_region)
+                )
+
+            Text(
+                modifier = Modifier
+                    .semantics {
+                        contentDescription = contentDesc
+                    },
+                text = data.label.asString(),
+                style = DiiaTextStyle.t1BigText,
+                color = Black,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            if(data.descriptionWithParameters == null) {
+                data.description?.let {
+                    val description = data.description.asString().replace(".", ",")
+                    Text(
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .semantics {
+                                if (data.accessibilityDescription != null) {
+                                    contentDescription = ""
+                                } else {
+                                    contentDescription = description
+                                }
+                            },
+                        text = data.description.asString(),
+                        style = DiiaTextStyle.t2TextDescription,
+                        color = if (data.interactionState == UIState.Interaction.Disabled) Black else BlackAlpha54,
+                    )
+                }
+            } else {
+                data.descriptionWithParameters?.let {
+                    TextWithParametersAtom(
+                        modifier = Modifier
+                            .alpha(if (data.interactionState == UIState.Interaction.Disabled)
+                                1.0f else 0.54f
+                            ),
+                        data = data.descriptionWithParameters,
+                        style = DiiaTextStyle.t2TextDescription,
+                        onUIAction = onUIAction,
+                    )
+                }
+            }
+
+            data.chipStatusAtm?.let {
+                ChipStatusAtm(
+                    modifier = Modifier.padding(top = 8.dp),
+                    data = data.chipStatusAtm,
+                )
+            }
+        }
+        data.iconRight?.let {
+            Image(
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .size(24.dp),
+                painter = painterResource(
+                    id = DiiaResourceIcon.getResourceId(it.code)
+                ),
+                contentDescription = data.iconRightContentDescription?.asString()
+                    ?: data.takeIf { data.action?.type == "link" }?.let {
+                        stringResource(R.string.accessibility_open_in_browser)
+                    }
+            )
+        }
+        data.amountAtm?.let {
+            AmountAtm(
+                modifier = Modifier.padding(start = 8.dp),
+                data = it
+            )
+        }
+    }
+}
+
+data class ListItemMlcData(
+    val actionKey: String = UIActionKeysCompose.LIST_ITEM_MLC,
+    override val id: String = "",
+    val label: UiText,
+    val accessibilityDescription: UiText? = null,
+    val description: UiText? = null,
+    val descriptionWithParameters: TextWithParametersData? = null,
+    val iconLeft: UiIcon.DrawableResource? = null,
+    val iconLeftContentDescription: UiText? = null,
+    val bigIconLeft: UiIcon.DrawableResource? = null,
+    val leftLogoLink: String? = null,
+    val bigIconLeftContentDescription: UiText? = null,
+    val iconRight: UiIcon.DrawableResource? = null,
+    val iconRightContentDescription: UiText? = null,
+    val logoLeft: UiIcon? = null,
+    val logoLeftContentDescription: UiText? = null,
+    val action: DataActionWrapper? = null,
+    val interactionState: UIState.Interaction = UIState.Interaction.Enabled,
+    val componentId: UiText? = null,
+    val dataJson: String? = null,
+    val chipStatusAtm: ChipStatusAtmData? = null,
+    val amountAtm: AmountAtmData? = null,
+    val parameters: List<TextParameter>? = null,
+) : UIElementData, SimplePagination {
+
+    fun getLabel() = (label as? UiText.DynamicString)?.value
+
+}
+
+fun ListItemMlc.toUiModel(id: String? = null): ListItemMlcData {
+    val entity: ListItemMlc = this
+    return ListItemMlcData(
+        componentId = this.componentId?.let { UiText.DynamicString(it) },
+        id = this.id ?: id ?: componentId ?: UIActionKeysCompose.LIST_ITEM_MLC,
+        label = label.toDynamicString(),
+        accessibilityDescription = accessibilityDescription.toDynamicString(),
+        description = if (description.isNullOrEmpty()) null else description?.toDynamicStringOrNull(),
+        descriptionWithParameters =
+                if (!description.isNullOrEmpty() && parameters != null)
+                {
+                    TextWithParametersData(
+                        text = UiText.DynamicString(entity.description ?: ""),
+                        parameters = if (entity.parameters != null) {
+                            mutableListOf<TextParameter>().apply {
+                                entity.parameters?.forEach {
+                                    add(
+                                        TextParameter(
+                                            data = TextParameter.Data(
+                                                name = it.data?.name.toDynamicStringOrNull(),
+                                                resource = it.data?.resource.toDynamicStringOrNull(),
+                                                alt = it.data?.alt.toDynamicStringOrNull()
+                                            ),
+                                            type = it.type
+                                        )
+                                    )
+                                }
+                            }
+
+                        } else emptyList()
+                    )
+                } else null
+            ,
+        iconLeft = iconLeft?.code?.let {
+            UiIcon.DrawableResource(it)
+        },
+        bigIconLeft = bigIconLeft?.code?.let {
+            UiIcon.DrawableResource(it)
+        },
+        leftLogoLink = leftLogoLink,
+        iconRight = iconRight?.code?.let {
+            UiIcon.DrawableResource(it)
+        },
+        logoLeft = logoLeft?.let {
+//            UiIcon.DynamicIconBase64(it) //TODO Return
+            UiIcon.DrawableResource(it)
+
+        },
+        action = action?.toDataActionWrapper(),
+        interactionState = when (state) {
+            ButtonStates.enabled.name -> UIState.Interaction.Enabled
+            ButtonStates.disabled.name -> UIState.Interaction.Disabled
+            ButtonStates.invisible.name -> UIState.Interaction.Disabled
+            else -> UIState.Interaction.Enabled
+        },
+        dataJson = this.dataJson,
+        chipStatusAtm = chipStatusAtm?.toUiModel(),
+        amountAtm = amountAtm?.toUIModel(),
+        parameters = if (this.parameters != null) {
+            mutableListOf<TextParameter>().apply {
+                parameters?.forEach {
+                    add(
+                        TextParameter(
+                            data = TextParameter.Data(
+                                name = it.data?.name.toDynamicStringOrNull(),
+                                resource = it.data?.resource.toDynamicStringOrNull(),
+                                alt = it.data?.alt.toDynamicStringOrNull()
+                            ),
+                            type = it.type
+                        )
+                    )
+                }
+            }
+        } else emptyList(),
+    )
+}
+
+@Composable
+@Preview(showBackground = true)
+fun ListItemMlcPreview_Full() {
+    val state = ListItemMlcData(
+        id = "123",
+        label = UiText.DynamicString("Label"),
+        description = UiText.DynamicString("Description"),
+        logoLeft = UiIcon.DynamicIconBase64(PreviewBase64Icons.apple),
+        iconLeft = UiIcon.DrawableResource(DiiaResourceIcon.MENU.code),
+        bigIconLeft = UiIcon.DrawableResource(DiiaResourceIcon.CASHBACK_CHARGE.code),
+        iconRight = UiIcon.DrawableResource(DiiaResourceIcon.ELLIPSE_ARROW_RIGHT.code),
+        action = DataActionWrapper(
+            type = "type",
+            subtype = "subtype",
+            resource = "resource"
+        ),
+        interactionState = UIState.Interaction.Enabled
+    )
+    ListItemMlc(modifier = Modifier, data = state) {
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun ListItemMlcPreview_Without_BigIconLeft() {
+    val state = ListItemMlcData(
+        id = "123",
+        label = UiText.DynamicString("Label"),
+        description = UiText.DynamicString("Description"),
+        logoLeft = UiIcon.DynamicIconBase64(PreviewBase64Icons.apple),
+        iconLeft = UiIcon.DrawableResource(DiiaResourceIcon.MENU.code),
+        iconRight = UiIcon.DrawableResource(DiiaResourceIcon.ELLIPSE_ARROW_RIGHT.code),
+        action = DataActionWrapper(
+            type = "type",
+            subtype = "subtype",
+            resource = "resource"
+        ),
+        interactionState = UIState.Interaction.Enabled
+    )
+    ListItemMlc(modifier = Modifier, data = state) {
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun ListItemMlcPreview_Loading() {
+    val state = ListItemMlcData(
+        id = "123",
+        label = UiText.DynamicString("Label"),
+        description = UiText.DynamicString("Description"),
+        logoLeft = UiIcon.DynamicIconBase64(PreviewBase64Icons.apple),
+        iconLeft = UiIcon.DrawableResource(DiiaResourceIcon.MENU.code),
+        iconRight = UiIcon.DrawableResource(DiiaResourceIcon.ELLIPSE_ARROW_RIGHT.code),
+        action = DataActionWrapper(
+            type = "type",
+            subtype = "subtype",
+            resource = "resource"
+        ),
+        interactionState = UIState.Interaction.Enabled
+    )
+    ListItemMlc(
+        modifier = Modifier, data = state,
+        progressIndicator = "123" to true
+    ) {
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun ListItemMlcPreview_Disabled() {
+    val state = ListItemMlcData(
+        id = "123",
+        label = UiText.DynamicString("Label"),
+        description = UiText.DynamicString("Description"),
+        logoLeft = UiIcon.DynamicIconBase64(PreviewBase64Icons.apple),
+        iconLeft = UiIcon.DrawableResource(DiiaResourceIcon.MENU.code),
+        iconRight = UiIcon.DrawableResource(DiiaResourceIcon.ELLIPSE_ARROW_RIGHT.code),
+        action = DataActionWrapper(
+            type = "type",
+            subtype = "subtype",
+            resource = "resource"
+        ),
+        interactionState = UIState.Interaction.Disabled
+    )
+    ListItemMlc(modifier = Modifier, data = state) {
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun ListItemMlcPreview_OnlyMandatoryFields() {
+    val state = ListItemMlcData(
+        id = "123",
+        label = UiText.DynamicString("Label"),
+        action = DataActionWrapper(
+            type = "type",
+            subtype = "subtype",
+            resource = "resource"
+        ),
+        interactionState = UIState.Interaction.Disabled
+    )
+    ListItemMlc(modifier = Modifier, data = state) {
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun ListItemMlcPreview_VeryLongTitle() {
+    val state = ListItemMlcData(
+        id = "123",
+        label = UiText.DynamicString("Label Label Label Label Label Label"),
+        description = UiText.DynamicString("Description"),
+        logoLeft = UiIcon.DynamicIconBase64(PreviewBase64Icons.apple),
+        iconLeft = UiIcon.DrawableResource(DiiaResourceIcon.MENU.code),
+        iconRight = UiIcon.DrawableResource(DiiaResourceIcon.ELLIPSE_ARROW_RIGHT.code),
+        action = DataActionWrapper(
+            type = "type",
+            subtype = "subtype",
+            resource = "resource"
+        ),
+        interactionState = UIState.Interaction.Enabled
+    )
+    ListItemMlc(modifier = Modifier, data = state) {
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun ListItemMlcPreview_Description_With_Parameters() {
+    val state = ListItemMlcData(
+        id = "123",
+        label = UiText.DynamicString("Label Label Label Label Label Label"),
+        description = UiText.DynamicString("_ Довгий текст, довгий текст. {link2}.\\\n"),
+        descriptionWithParameters = TextWithParametersData(
+            text = UiText.DynamicString("Довгий текст, довгий текст. \\\nДалі іде текст з лінкою і в resource передається послилання: {link2}."),
+            parameters = listOf(
+                TextParameter(
+                    type = "link",
+                    data = Data(
+                        name = "link2".toDynamicStringOrNull(),
+                        alt = "текст з лінкою".toDynamicStringOrNull(),
+                        resource = "https://appeal.mva.gov.ua/".toDynamicStringOrNull()
+                    )
+                )
+            )
+        ),
+        logoLeft = UiIcon.DynamicIconBase64(PreviewBase64Icons.apple),
+        iconLeft = UiIcon.DrawableResource(DiiaResourceIcon.MENU.code),
+        iconRight = UiIcon.DrawableResource(DiiaResourceIcon.ELLIPSE_ARROW_RIGHT.code),
+        action = DataActionWrapper(
+            type = "type",
+            subtype = "subtype",
+            resource = "resource"
+        ),
+        interactionState = UIState.Interaction.Enabled
+    )
+    ListItemMlc(modifier = Modifier, data = state) {
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun ListItemMlcPreview_Chip() {
+    val state = ListItemMlcData(
+        id = "123",
+        label = UiText.DynamicString("Label"),
+        description = UiText.DynamicString("Description"),
+        logoLeft = UiIcon.DynamicIconBase64(PreviewBase64Icons.apple),
+        chipStatusAtm = ChipStatusAtmData(
+            type = StatusChipType.PENDING, title = "STATUS"
+        ),
+        amountAtm = AmountAtmData(
+            value = UiText.DynamicString("+3 000.00 ₴"),
+            color = Color.GREEN
+        ),
+        action = DataActionWrapper(
+            type = "type",
+            subtype = "subtype",
+            resource = "resource"
+        ),
+        interactionState = UIState.Interaction.Enabled
+    )
+    ListItemMlc(modifier = Modifier, data = state) {
+    }
+}
+
+
+@Composable
+@Preview(showBackground = true)
+fun ListItemMlcPreview_IconRight() {
+    val state = ListItemMlcData(
+        id = "123",
+        label = UiText.DynamicString("Label"),
+        iconRight = UiIcon.DrawableResource(DiiaResourceIcon.ARROW_MIN_RIGHT.code)
+    )
+    ListItemMlc(modifier = Modifier, data = state) {
+    }
+}

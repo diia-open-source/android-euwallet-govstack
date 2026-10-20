@@ -1,0 +1,34 @@
+[
+  {
+    "order": 0,
+    "issuerUrl": "https://bb-wallet-issuer.demo3.ukrohost.com",
+    "clientAuthenticationType": "AttestationBased",
+    "authFlowRedirectionURI": "eu.europa.ec.euidi://authorization",
+    "usePar": "IF_SUPPORTED",
+    "logIncompleteDeferredIssuance": true
+  },
+  {
+    "order": 1,
+    "issuerUrl": "https://bb-wallet-issuer.demo.ukrohost.com",
+    "clientAuthenticationType": "AttestationBased",
+    "authFlowRedirectionURI": "eu.europa.ec.euidi://authorization",
+    "usePar": "IF_SUPPORTED",
+    "logIncompleteDeferredIssuance": true
+  },
+  {
+    "order": 2,
+    "issuerUrl": "https://issuer.eudiw.dev",
+    "clientAuthenticationType": "AttestationBased",
+    "authFlowRedirectionURI": "eu.europa.ec.euidi://authorization",
+    "usePar": "IF_SUPPORTED",
+    "logIncompleteDeferredIssuance": true
+  },
+  {
+    "order": 3,
+    "issuerUrl": "https://issuer-backend.eudiw.dev",
+    "clientAuthenticationType": "AttestationBased",
+    "authFlowRedirectionURI": "eu.europa.ec.euidi://authorization",
+    "usePar": "IF_SUPPORTED",
+    "logIncompleteDeferredIssuance": true
+  }
+]

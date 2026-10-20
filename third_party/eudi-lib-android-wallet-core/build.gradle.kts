@@ -1,0 +1,30 @@
+/*
+ * Copyright (c) 2024 European Commission
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Modifications Copyright (c) 2026 GovStack/Diia contributors.
+ * This file has been modified from the original upstream version.
+ */
+
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+plugins {
+    id("com.android.library") version "8.11.1" apply false
+    id("org.jetbrains.dokka") version "2.2.0" apply false
+    id("com.github.jk1.dependency-license-report") version "2.9" apply false
+    id("org.owasp.dependencycheck") version "12.1.3" apply false
+    id("org.jetbrains.kotlin.android") version "2.2.21" apply false
+    id("org.jetbrains.kotlin.jvm") version "2.1.21" apply false
+}

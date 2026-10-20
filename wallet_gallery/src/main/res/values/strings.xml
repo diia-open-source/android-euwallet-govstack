@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="activation_card_title">Your wallet has been created!</string>
+    <string name="activation_card_description">To activate your wallet, add your Personal Identification Document.\nAfter that, you’ll be able to add other documents.</string>
+    <string name="activation_card_btn">Start</string>
+    <string name="claim_category_title">Category:</string>
+    <string name="claim_residence_address">Residence Address:</string>
+    <string name="claim_issue_date_title">Date of issue:</string>
+    <string name="claim_expiry_date_title">Expiry Date:</string>
+    <string name="ticker_label_s">• Document valid until %s</string>
+    <string name="no_documents_yet">No documents yet</string>
+    <string name="add_documents_to_your_wallet_to_change_their_order">Add documents to your wallet to change their order</string>
+</resources>

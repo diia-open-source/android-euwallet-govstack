@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sharing_bottom_sheet_bluetooth_permission_title">Bluetooth Access Required</string>
+    <string name="sharing_bottom_sheet_bluetooth_permission_description">Enable Bluetooth access in Settings to share your data.</string>
+    <string name="sharing_bottom_sheet_bluetooth_disabled_title">Turn On Bluetooth</string>
+    <string name="sharing_bottom_sheet_bluetooth_disabled_description">Enable Bluetooth in Settings to continue.</string>
+    <string name="sharing_bottom_sheet_msodoc_description">At least one document of type MSO Mdoc is required to proceed</string>
+    <string name="sharing_bottom_sheet_msodoc_title">No documents available for sharing</string>
+    <string name="sharing_bottom_sheet_msodoc_btn">Cancel</string>
+    <string name="sharing_bottom_sheet_go_to_settings">Go to Settings</string>
+    <string name="sharing_family_name">Family name</string>
+    <string name="sharing_given_name">Given name</string>
+    <string name="sharing_family_name_birth">Surname at birth</string>
+    <string name="sharing_given_name_birth">Name at birth</string>
+    <string name="sharing_birth_date">Birth date</string>
+    <string name="sharing_age_over_18">Age over 18</string>
+    <string name="sharing_resident_address">Resident address</string>
+    <string name="sharing_gender">Gender</string>
+    <string name="sharing_birth_place">Birth place</string>
+    <string name="sharing_nationality">Nationality</string>
+    <string name="sharing_signature">Signature</string>
+    <string name="sharing_portrait">Portrait</string>
+    <string name="sharing_issuance_date">Issuance date</string>
+    <string name="sharing_expiry_date">Expiration date</string>
+    <string name="sharing_issuing_authority">Issuing authority</string>
+    <string name="sharing_issuing_country">Issuing country</string>
+    <string name="sharing_document_number">Document number</string>
+    <string name="sharing_gender_for_display">Gender for display</string>
+    <string name="sharing_nationality_for_display">Nationality for display</string>
+    <string name="sharing_un_distinguishing_sign">Distinguishing sign</string>
+    <string name="sharing_screen_navigation_panel_title">Data sharing</string>
+    <string name="sharing_screen_btn_share_data">Share data</string>
+
+    <string name="sharing_screen_requester_label">%1$s requests your data to conclude the contract.</string>
+    <string name="sharing_screen_header">Request for digital data</string>
+    <string name="sharing_screen_snack_bar_notification">The distribution of selective data can affect the availability of the service.</string>
+    <string name="sharing_info_block">Sharing all requested data is optional. However, providing less information may affect the outcome of your verification.</string>
+</resources>

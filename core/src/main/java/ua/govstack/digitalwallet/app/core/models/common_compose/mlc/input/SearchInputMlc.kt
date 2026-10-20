@@ -1,0 +1,25 @@
+package ua.govstack.digitalwallet.app.core.models.common_compose.mlc.input
+
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+import ua.govstack.digitalwallet.app.core.models.common_compose.general.PaddingMode
+
+@JsonClass(generateAdapter = true)
+data class SearchInputMlc(
+    @Json(name = "componentId")
+    val componentId: String?,
+    @Json(name = "paddingMode")
+    val paddingMode: PaddingMode? = null,
+    @Json(name = "label")
+    val label: String,
+    @Json(name = "iconLeft")
+    val iconLeft: SearchIcon?,
+    @Json(name = "iconRight")
+    val iconRight: SearchIcon?
+) {
+    @JsonClass(generateAdapter = true)
+    data class SearchIcon(
+        @Json(name = "code")
+        val code: String
+    )
+}

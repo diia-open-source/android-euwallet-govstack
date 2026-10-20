@@ -1,0 +1,28 @@
+<resources>
+    <string name="deferred_issuing_notification_channel_name">Deferred issuing updates</string>
+    <string name="deferred_issuing_notification_success_title">The document has been created</string>
+    <string name="deferred_issuing_notification_success_message">The document has been successfully added to your wallet</string>
+    <string name="deferred_issuing_notification_failed_title">Document request failed</string>
+    <string name="deferred_issuing_notification_failed_message">For some reason, your document request couldn\'t be processed.</string>
+    <string name="deferred_issuing_notification_expired_title">Document expired</string>
+    <string name="deferred_issuing_notification_expired_message">This document is no longer valid. Please request a new one from the document gallery.</string>
+
+
+    <string name="add_document_screen_add_a_document">Add a document</string>
+    <string name="add_document_screen_choose_a_digital_document">Choose a digital document from the list below to add to your wallet, or scan a QR code.</string>
+    <string name="add_document_screen_choose_from_list">Choose from list</string>
+    <string name="add_document_screen_no_new_documents_available">No new documents available</string>
+    <string name="add_document_screen_you_have_already_added">You have already added all digital documents available for this wallet.</string>
+
+    <string name="add_document_screen_issuer_s">Issuer: %s</string>
+    <string name="credential_offer_screen_toolbar_title">eWallet</string>
+    <string name="pre_auth_pin_done">Done</string>
+    <string name="pre_auth_pin_transaction_code_title">Transaction code</string>
+    <string name="pre_auth_pin_transaction_code_description">Type the transaction code you received</string>
+    <string name="pre_auth_pin_code_label">Code</string>
+    <string name="pre_auth_pin_code_placeholder">Enter code</string>
+
+    <string name="no_internet_title">No internet connection</string>
+    <string name="no_internet_description">Check your connection and try again.</string>
+    <string name="common_try_again">Try again</string>
+</resources>

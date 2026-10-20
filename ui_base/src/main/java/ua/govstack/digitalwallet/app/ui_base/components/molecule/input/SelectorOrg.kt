@@ -1,0 +1,451 @@
+package ua.govstack.digitalwallet.app.ui_base.components.molecule.input
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import ua.govstack.digitalwallet.app.core.models.common_compose.org.input.question_form.SelectorOrg
+import ua.govstack.digitalwallet.app.ui_base.R
+import ua.govstack.digitalwallet.app.ui_base.components.atom.button.BtnPrimaryDefaultAtmData
+import ua.govstack.digitalwallet.app.ui_base.components.atom.text.textwithparameter.TextWithParametersData
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.BaseScreen
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.UIElementData
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.addAllIfNotNull
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.event.UIAction
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.event.UIActionKeysCompose
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.state.UIState
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.utils.resource.UiText
+import ua.govstack.digitalwallet.app.ui_base.components.molecule.header.NavigationPanelMlcData
+import ua.govstack.digitalwallet.app.ui_base.components.molecule.message.AttentionMessageMlcData
+import ua.govstack.digitalwallet.app.ui_base.components.molecule.text.TitleLabelMlcData
+import ua.govstack.digitalwallet.app.ui_base.components.noRippleClickable
+import ua.govstack.digitalwallet.app.ui_base.components.organism.bottom.BottomGroupOrgData
+import ua.govstack.digitalwallet.app.ui_base.components.organism.header.TopGroupOrgData
+import ua.govstack.digitalwallet.app.ui_base.components.organism.input.QuestionFormsOrgDataLocal
+import ua.govstack.digitalwallet.app.ui_base.components.theme.Black
+import ua.govstack.digitalwallet.app.ui_base.components.theme.BlackAlpha30
+import ua.govstack.digitalwallet.app.ui_base.components.theme.DiiaTextStyle
+import ua.govstack.digitalwallet.app.ui_base.components.theme.White
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun SelectorOrg(
+    modifier: Modifier = Modifier,
+    data: SelectorOrgData,
+    onUIAction: (UIAction) -> Unit
+) {
+    var focusState by remember { mutableStateOf<UIState.Focus>(UIState.Focus.NeverBeenFocused) }
+    val bringIntoHintViewRequester = BringIntoViewRequester()
+
+    val basicTextFieldDescription = listOfNotNull(
+        data.label,
+        data.inputValue,
+        data.hintMessage,
+        data.placeholder
+    ).joinToString(separator = " ")
+
+    BasicTextField(
+        value = data.inputValue ?: "", enabled = false, modifier = modifier
+            .onFocusChanged {
+                focusState = when (focusState) {
+                    UIState.Focus.NeverBeenFocused -> {
+                        if (data.inputValue.isNullOrEmpty()) {
+                            if (it.isFocused || it.hasFocus) {
+                                UIState.Focus.FirstTimeInFocus
+                            } else {
+                                UIState.Focus.NeverBeenFocused
+                            }
+                        } else {
+                            UIState.Focus.OutOfFocus
+                        }
+                    }
+
+                    UIState.Focus.FirstTimeInFocus -> {
+                        UIState.Focus.OutOfFocus
+                    }
+
+                    UIState.Focus.InFocus -> UIState.Focus.OutOfFocus
+                    UIState.Focus.OutOfFocus -> UIState.Focus.InFocus
+                }
+            }
+            .noRippleClickable {
+                if (data.isEnabled) {
+                    onUIAction(
+                        UIAction(
+                            actionKey = data.actionKey,
+                            states = listOf(focusState),
+                            optionalId = data.id
+                        )
+                    )
+                }
+            }
+            .clearAndSetSemantics {
+                role = Role.Button
+                contentDescription = basicTextFieldDescription
+            },
+        onValueChange = {},
+        textStyle = TextStyle(
+            fontFamily = FontFamily(Font(R.font.e_ukraine_regular)),
+            fontWeight = FontWeight.Normal,
+            fontSize = 14.sp,
+            lineHeight = 17.sp,
+            color = if (data.isEnabled) Black else BlackAlpha30
+        ),
+        singleLine = false,
+        decorationBox = @Composable { innerTextField ->
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(data.componentId?.asString() ?: ""),
+            ) {
+                data.label?.let {
+                    Text(
+                        text = data.label,
+                        style = DiiaTextStyle.t4TextSmallDescription,
+                        color = if (data.isEnabled) Black else BlackAlpha30
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        if (data.inputValue.isNullOrEmpty()) {
+                            Text(
+                                text = data.placeholder ?: "",
+                                style = DiiaTextStyle.t1BigText,
+                                color = BlackAlpha30
+                            )
+                        }
+                        innerTextField()
+                    }
+                    Icon(
+                        modifier = Modifier.align(Alignment.CenterEnd),
+                        painter = painterResource(R.drawable.ic_arrow_next),
+                        contentDescription = null,
+                        tint = if (data.isEnabled) {
+                            Black
+                        } else {
+                            BlackAlpha30
+                        }
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 6.dp)
+                        .height(2.dp)
+                        .background(BlackAlpha30)
+                )
+
+                AnimatedVisibility(focusState == UIState.Focus.FirstTimeInFocus) {
+                    data.hintMessage?.let {
+                        Text(
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                                .bringIntoViewRequester(bringIntoHintViewRequester),
+                            text = data.hintMessage,
+                            style = DiiaTextStyle.t4TextSmallDescription,
+                            color = BlackAlpha30
+                        )
+                    }
+                }
+            }
+        })
+}
+
+data class SelectorOrgData(
+    val actionKey: String = UIActionKeysCompose.SELECTOR_ORG,
+    val componentId: UiText? = null,
+    val id: String? = null,
+    val label: String? = null,
+    val inputValue: String? = null,
+    val placeholder: String? = null,
+    val hintMessage: String? = null,
+    val inputCode: String? = null,
+    val mandatory: Boolean? = null,
+    val isEnabled: Boolean = true,
+) : InputFormItem() {
+    fun onInputChanged(newValue: String?): SelectorOrgData {
+        if (newValue == null) return this
+        return this.copy(inputValue = newValue)
+    }
+}
+
+fun SelectorOrg.toUIModel(): SelectorOrgData {
+    return SelectorOrgData(
+        componentId = componentId?.let { UiText.DynamicString(it) },
+        id = this.id ?: componentId,
+        label = this.label,
+        inputValue = this.value,
+        placeholder = this.placeholder,
+        hintMessage = this.hint,
+        inputCode = this.inputCode,
+        mandatory = this.mandatory,
+        isEnabled = this.isEnabled ?: true
+    )
+}
+
+enum class SelectorOrgMockType {
+    enabled, disabled, prefilled
+}
+
+fun generateSelectorOrgMockData(mockType: SelectorOrgMockType): SelectorOrgData {
+    return when (mockType) {
+        SelectorOrgMockType.enabled -> {
+            SelectorOrgData(
+                id = "",
+                label = LoremIpsum(6).values.joinToString(),
+                inputValue = "",
+                placeholder = "Placeholder",
+                hintMessage = LoremIpsum(50).values.joinToString(),
+            )
+        }
+
+        SelectorOrgMockType.disabled -> {
+            SelectorOrgData(
+                id = "",
+                label = LoremIpsum(6).values.joinToString(),
+                inputValue = "",
+                placeholder = "Placeholder",
+                hintMessage = LoremIpsum(50).values.joinToString(),
+                isEnabled = false
+            )
+        }
+
+        SelectorOrgMockType.prefilled -> {
+            SelectorOrgData(
+                id = "",
+                label = LoremIpsum(6).values.joinToString(),
+                inputValue = "123456",
+                placeholder = "Placeholder",
+                hintMessage = LoremIpsum(50).values.joinToString(),
+            )
+        }
+    }
+
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+@Preview
+fun SelectorOrgEnabled() {
+
+    val data = generateSelectorOrgMockData(SelectorOrgMockType.enabled)
+
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+
+    val state = remember {
+        mutableStateOf(data)
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(White), horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        SelectorOrg(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .focusRequester(focusRequester), data = state.value, onUIAction = {
+                state.value = state.value.onInputChanged(it.data)
+            })
+
+        Button(modifier = Modifier.padding(bottom = 16.dp), onClick = {
+            focusManager.clearFocus()
+        }) {
+            Text("Click to remove focus from search")
+        }
+    }
+}
+
+@Composable
+@Preview
+fun SelectorOrgDisabled() {
+    val data = generateSelectorOrgMockData(SelectorOrgMockType.disabled)
+
+
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+
+    val state = remember {
+        mutableStateOf(data)
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(White), horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        SelectorOrg(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .focusRequester(focusRequester), data = state.value, onUIAction = {
+                state.value = state.value.onInputChanged(it.data)
+            })
+
+        Button(modifier = Modifier.padding(bottom = 16.dp), onClick = {
+            focusManager.clearFocus()
+        }) {
+            Text("Click to remove focus from search")
+        }
+    }
+}
+
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+@Preview
+fun SelectorOrgPreview_Prefilled() {
+
+    val data = generateSelectorOrgMockData(SelectorOrgMockType.prefilled)
+
+
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+
+    val state = remember {
+        mutableStateOf(data)
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(White), horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        SelectorOrg(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .focusRequester(focusRequester), data = state.value, onUIAction = {
+                state.value = state.value.onInputChanged(it.data)
+            })
+
+        Button(modifier = Modifier.padding(bottom = 16.dp), onClick = {
+            focusManager.clearFocus()
+        }) {
+            Text("Click to remove focus from search")
+        }
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Preview
+@Composable
+fun SelectorOrg_Preview() {
+
+    val toolbarData: SnapshotStateList<UIElementData> =
+        SnapshotStateList<UIElementData>().addAllIfNotNull(
+            TopGroupOrgData(
+                navigationPanelMlcData = NavigationPanelMlcData(
+                    title = UiText.DynamicString("Title"),
+                    isContextMenuExist = true
+                )
+            )
+        )
+
+    val bodyData: SnapshotStateList<UIElementData> =
+        SnapshotStateList<UIElementData>().addAllIfNotNull(
+            TitleLabelMlcData(label = "Some title"),
+            AttentionMessageMlcData(
+                icon = "",
+                title = "Title",
+                description = TextWithParametersData(
+                    text = UiText.DynamicString(LoremIpsum(30).values.joinToString()),
+                    parameters = emptyList()
+                )
+            ),
+            QuestionFormsOrgDataLocal(
+                id = "",
+                title = null,
+                items = SnapshotStateList<UIElementData>().apply {
+                    add(
+                        SelectorOrgData(
+                            id = "1",
+                            label = "label",
+                            placeholder = "hint",
+                            inputValue = "",
+                        )
+                    )
+                    add(
+                        SelectorOrgData(
+                            id = "2",
+                            label = "label2",
+                            placeholder = "hint2",
+                            inputValue = "",
+                        )
+                    )
+                }
+            )
+
+        )
+
+    val bottomData: SnapshotStateList<UIElementData> =
+        SnapshotStateList<UIElementData>().addAllIfNotNull(
+            BottomGroupOrgData(
+                primaryButton = BtnPrimaryDefaultAtmData(
+                    actionKey = "123",
+                    title = UiText.DynamicString("title"),
+                    interactionState = UIState.Interaction.Enabled
+                )
+            )
+        )
+
+
+    BaseScreen(
+        toolbar = toolbarData,
+        body = bodyData,
+        bottom = bottomData,
+        onEvent = {})
+
+}

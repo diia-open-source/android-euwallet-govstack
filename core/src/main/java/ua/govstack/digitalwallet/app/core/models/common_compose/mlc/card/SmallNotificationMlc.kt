@@ -1,0 +1,25 @@
+package ua.govstack.digitalwallet.app.core.models.common_compose.mlc.card
+
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+import ua.govstack.digitalwallet.app.core.models.common_compose.atm.chip.ChipStatusAtm
+import ua.govstack.digitalwallet.app.core.models.common_compose.atm.icon.SmallIconUrlAtm
+import ua.govstack.digitalwallet.app.core.models.common_compose.general.Action
+
+@JsonClass(generateAdapter = true)
+data class SmallNotificationMlc(
+    @Json(name = "id")
+    val id: String,
+    @Json(name = "label")
+    val label: String,
+    @Json(name = "text")
+    val text: String,
+    @Json(name = "chipStatusAtm")
+    val chipStatusAtm: ChipStatusAtm?,
+    @Json(name = "smallIconUrlAtm")
+    val smallIconUrlAtm: SmallIconUrlAtm?,
+    @Json(name = "action")
+    val action: Action?,
+    @Json(name = "accessibilityDescription")
+    val accessibilityDescription: String?,
+)

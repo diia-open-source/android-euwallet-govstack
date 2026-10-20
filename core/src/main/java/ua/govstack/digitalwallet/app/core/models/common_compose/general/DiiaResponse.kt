@@ -1,0 +1,28 @@
+package ua.govstack.digitalwallet.app.core.models.common_compose.general
+
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+import ua.govstack.digitalwallet.app.core.models.dialogs.TemplateDialogModel
+import ua.govstack.digitalwallet.app.core.models.rating_service.RatingFormModel
+
+@JsonClass(generateAdapter = true)
+data class DiiaResponse(
+    @Json(name = "topGroup")
+    val topGroup: List<TopGroup>?,
+    @Json(name = "body")
+    val body: List<Body>?,
+    @Json(name = "centeredBody")
+    val centeredBody: List<CenteredBody>?,
+    @Json(name = "bottomGroup")
+    val bottomGroup: List<BottomGroup>?,
+    @Json(name = "processCode")
+    val processCode: String?,
+    @Json(name = "template")
+    val template: TemplateDialogModel?,
+    @Json(name = "ratingForm")
+    val ratingForm: RatingFormModel?,
+    @Json(name = "nextStep")
+    val nextStep: String?,
+    @Json(name = "code")
+    val code: String?
+)

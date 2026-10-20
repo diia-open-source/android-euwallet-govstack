@@ -1,0 +1,19 @@
+package ua.govstack.digitalwallet.app.core.models.common_compose.org.input
+
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+import ua.govstack.digitalwallet.app.core.models.common_compose.mlc.input.InputTextMultilineMlc
+
+@JsonClass(generateAdapter = true)
+data class EditAutomaticallyDeterminedValueOrg(
+    @Json(name = "componentId")
+    val componentId: String?,
+    @Json(name = "title")
+    val title: String?,
+    @Json(name = "label")
+    val label: String?,
+    @Json(name = "value")
+    val value: String?,
+    @Json(name = "inputTextMultilineMlc")
+    val inputTextMlc: InputTextMultilineMlc?
+)

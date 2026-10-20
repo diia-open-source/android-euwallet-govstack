@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- identity check -->
+    <string name="identity_error_try_again">Try again</string>
+    <string name="update_data">Update data</string>
+    <string name="identity_error_unknown">Unfortunately, something went wrong</string>
+    <string name="identity_error_no_internet">No internet connection. Check your connection and try again</string>
+    <string name="identity_error_timeout">The request timed out</string>
+    <string name="idenity_error_understood">Got it</string>
+    <string name="identity_error_not_registered">The request is not registered in Diia</string>
+    <string name="error_dialog_back">Go back</string>
+
+    <string name="error_document_not_found">No documents were found for your request</string>
+    <string name="error_service_not_available">Service is unavailable</string>
+
+    <string name="share_doc_not_present">The request contains documents that are not available in Diia</string>
+    <string name="share_doc_timeout">The QR code has expired</string>
+
+    <!-- pay Error -->
+    <string name="identity_error_payment">Payment was not completed</string>
+    <string name="payment_value_changed">The payment amount has changed</string>
+    <string name="dl_replace_not_sent">The application was not submitted</string>
+    <string name="dl_replace_return_to_docs">Return to documents</string>
+    <string name="error_add_doc_request_limit">The number of attempts has been exceeded. Please try again later</string>
+    <!--    actions     -->
+    <string name="allow">Allow</string>
+    <string name="open_settings">Settings</string>
+    <string name="deny">Don’t Allow</string>
+    <string name="close">Close</string>
+    <!-- Camera permission -->
+    <string name="camera_permission_request">To scan QR codes and verify documents, camera access is required.</string>
+    <string name="camera_permission_request_rational">To scan QR codes and verify documents, camera access is required.</string>
+    <string name="camera_permission_request_title">Allow camera access</string>
+    <string name="camera_permission_request_title_rational">Allow camera access</string>
+    <string name="camera_permission_to_settings">Go to settings</string>
+    <string name="camera_permission_rationale_title"><u>Learn more about camera access here</u></string>
+    <string name="camera_permission_rationale">Diia may request access to the camera to verify documents or user data by scanning QR codes, create a remote qualified electronic signature, identify a person (by comparing a photo with data from the Unified Demographic Register), and use a qualified remote electronic signature. The camera is not used for any other purposes. By granting this permission, you confirm these actions.</string>
+
+    <!--- Location permission -->
+    <string name="location_permission_request_title">Allow location access</string>
+    <string name="location_permission_request">To verify your identity at nearby service points, location access is required.</string>
+    <string name="location_permission_rationale_title"><u>Learn more about location access here</u></string>
+    <string name="location_permission_rationale">Diia may request access to location to verify the accuracy of the address specified as current. IMPORTANT!!! Location will not be used for any other purposes.</string>
+
+    <!--- Notifications permission -->
+    <string name="notifications_permission_request_title">Allow Notifications</string>
+    <string name="notifications_permission_request">To receive updates on your documents, notification access is required.</string>
+
+    <!--- Audio permission -->
+    <string name="audio_permission_request_title">The app needs access to device audio</string>
+    <string name="audio_permission_request">Grant Diia access to device audio to successfully complete the service video broadcast process</string>
+    <string name="audio_permission_rationale_title"><u>Learn more about device audio access here</u></string>
+    <string name="audio_permission_rationale">Diia may request access to audio to successfully complete the service video broadcast process.</string>
+
+    <!--- Phone state permission -->
+    <string name="phone_state_permission_request_title">The app needs access to call status</string>
+    <string name="phone_state_permission_request">Grant Diia access to call status to successfully complete the service video broadcast process</string>
+    <string name="phone_state_permission_rationale_title"><u>Learn more about call status access here</u></string>
+    <string name="phone_state_permission_rationale">Diia may request access to call status to successfully complete the service video broadcast process.</string>
+
+    <!-- Already in app -->
+    <string name="already_auth_error_title">You are already signed in to the app.</string>
+    <string name="already_auth_error_message">To sign in with another method, you must first sign out of the app.</string>
+    <string name="already_auth_error_stay_in_app"><u>No, stay in the app</u></string>
+
+    <!--- Bluetooth permission -->
+    <string name="bluetooth_permission_request_title">Allow Bluetooth access</string>
+    <string name="bluetooth_permission_request">To share identity documents with nearby verifiers, Bluetooth access is required.</string>
+    <string name="bluetooth_permission_rationale_title"><u>Learn more about Bluetooth access</u></string>
+    <string name="bluetooth_permission_rationale">Please grant Diia access to Bluetooth</string>
+
+    <!-- Storage permission -->
+    <string name="file_permission_request_title">Grant Diia access to file storage</string>
+    <string name="file_permission_request">This is required to save receipts, declarations, and applications, as well as to add photos when creating petitions.</string>
+    <string name="file_permission_rationale_title"><u>Learn more about storage access</u></string>
+    <string name="file_permission_rationale">Grant Diia access to external file storage. This is required to store copies of documents confirming the provision of electronic services, as well as to upload photos when creating electronic petitions to local authorities. We use this access only for these purposes and do not share it with anyone without your consent. By granting this permission, you confirm these actions.</string>
+
+    <string name="log_out">Log out</string>
+
+    <string name="critical_error_title">⚡ Attention</string>
+
+    <string name="debt_on_hold">All on hold (+%1$d)</string>
+    <string name="error_add_doc_request_limit_desc">Please try again later</string>
+    <string name="critical_error_icon">⚡</string>
+    <string name="identity_error_no_internet_desc">Check your connection and try again</string>
+
+    <string name="settings_dialog_title_faq">The App wants to open %s</string>
+    <string name="settings_dialog_title_not_support">«%s» is not installed on your device</string>
+    <string name="settings_dialog_title_logout">Log out of the app?</string>
+    <string name="settings_dialog_logout_text">If you log out, all documents will be removed. You’ll need to re-authorize to add them again.</string>
+    <string name="settings_dialog_logout_leave">Log out</string>
+    <string name="settings_dialog_logout_stay">Cancel</string>
+    <string name="settings_dialog_support_open">Open</string>
+    <string name="settings_dialog_support_cancel">Cancel</string>
+
+    <string name="num_device_copied">Device number copied</string>
+    <string name="criminal_cert_details_download_zip">Download archive with extract</string>
+
+    <string name="retry">Try again</string>
+    <string name="phone_number_mask_input_hint">0123456789123456789</string>
+    <string name="text_length_counter">Characters remaining: %d</string>
+    <string name="home_loading" />
+
+    <!-- Tax payer card statuses -->
+    <string name="taxpayer_card_status_ok">Verified by the State Tax Service on %1$s</string>
+    <string name="taxpayer_card_status_in_progress">Being verified by the State Tax Service</string>
+    <string name="taxpayer_card_status_failed">Failed verification by the State Tax Service</string>
+
+    <string name="document_offer_permission_text">We need your permission and authentication to receive the following documents:</string>
+    <string name="document_offer_add_document">Add document</string>
+    <string name="document_offer_add_document_no">No, thank you</string>
+    <string name="document_issuance_request">"Issuance Request"</string>
+    <string name="document_issuer_format">Issuer: %1$s</string>
+</resources>

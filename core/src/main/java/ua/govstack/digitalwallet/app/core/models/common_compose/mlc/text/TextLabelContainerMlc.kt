@@ -1,0 +1,17 @@
+package ua.govstack.digitalwallet.app.core.models.common_compose.mlc.text
+
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+typealias TextParameterApi = ua.govstack.digitalwallet.app.core.models.common.message.TextParameter
+
+@JsonClass(generateAdapter = true)
+data class TextLabelContainerMlc(
+    @Json(name = "componentId")
+    val componentId: String?,
+    @Json(name = "label")
+    val label: String?,
+    @Json(name = "text")
+    val text: String?,
+    @Json(name = "parameters")
+    val parameters: List<TextParameterApi>?
+)

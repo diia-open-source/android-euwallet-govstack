@@ -1,0 +1,76 @@
+package ua.govstack.digitalwallet.app.core.ui.dynamicdialog
+
+object ActionsConst {
+
+    //diia custom actions
+    const val DIALOG_ACTION_CODE_CLOSE = "ua.govstack.digitalwallet.app.app.close"
+    const val GENERAL_RETRY = "ua.govstack.digitalwallet.app.app.retry"
+    const val ERROR_DIALOG_DEAL_WITH_IT = "ua.govstack.digitalwallet.app.app.deal_with_it"
+
+    const val ACTION_NAVIGATE_BACK = "back"
+    const val ACTION_HIDE = "hide"
+    const val ACTION_FORCE_UPDATE = "force_update"
+    const val DIALOG_ACTION_CODE_SKIP = "skip"
+    const val DIALOG_DEAL_WITH_IT = "ok"
+    const val DIALOG_ACTION_REFRESH = "refresh"
+    const val DIALOG_ACTION_EXIT = "exit"
+    const val DIALOG_ACTION_CONFIRM = "confirm"
+    const val DIALOG_ACTION_EXIT_CONFIRM = "exitConfirm"
+    const val DIALOG_ACTION_EXIT_FORCE = "exitForce"
+    const val DIALOG_ACTION_CLOSE = "close"
+    const val DIALOG_ACTION_SHARE = "share"
+    const val DIALOG_ACTION_RETRY = "retry"
+    const val DIALOG_ACTION_SHARING = "sharing"
+    const val DIALOG_ACTION_CANCEL = "cancel"
+    const val DIALOG_ACTION_REJECT_APPLICATION = "reject_application"
+    const val DIALOG_ACTION_CODE_LOGOUT = "logout"
+    const val DIALOG_ACTION_CODE_REPEAT = "repeat"
+    const val DIALOG_ACTION_RESUME = "resume"
+    const val DIALOG_ACTION_CODE_DELETE = "delete"
+    const val DIALOG_ACTION_BACK = "back"
+    const val DIALOG_ACTION_WEB_VIEW = "webView"
+    
+    @Deprecated("DIALOG_ACTION_PUBLIC_SERVICES is kept only for old services, for new must be used DIALOG_ACTION_TO_PUBLIC_SERVICES")
+    const val DIALOG_ACTION_PUBLIC_SERVICES = "publicServices"
+
+    const val DIALOG_ACTION_TO_PUBLIC_SERVICES = "public_services"
+
+    const val DIALOG_ACTION_PREV_SCREEN = "previousScreen"
+    const val DIALOG_ACTION_OPEN_EXTERNAL_LINK = "externalLink"
+
+    const val DIALOG_ACTION_DOC_DELETE = "doc_delete"
+    const val DIALOG_ACTION_DOC_NEXT = "nextDocument"
+    const val DIALOG_ACTION_DOC_CONFIRM_REMOVE = "remove"
+    const val DIALOG_ACTION_DOC_CANCEL_REMOVE = "cancel_remove"
+
+
+    const val KEY_GLOBAL_PROCESSING =
+        "ua.govstack.digitalwallet.app.app.ui.fragments.dialogs.dynamicdialog.action_global_processing"
+
+    //Template dialog result actions
+    const val FRAGMENT_USER_ACTION_RESULT_KEY = "fragment_template_action_result"
+    const val BOTTOM_SHEET_RESULT_KEY = "bottom_sheet_result_key"
+
+    //system dialog actions
+    const val SYSTEM_DIALOG_POSITIVE = "SYSTEM_DIALOG_POSITIVE"
+    const val SYSTEM_DIALOG_NEGATIVE = "SYSTEM_DIALOG_NEGATIVE"
+
+    //action item selection
+    const val ACTION_ITEM_SELECTED = "SELECTED_ACTION_ITEM"
+
+    //context menu
+    const val CONTEXT_MENU_CLOSE = "close"
+
+    //nav const
+    const val RESULT_KEY_NAVIGATION = "RESULT_KEY_NAVIGATION"
+    const val RESULT_KEY_RATING_SERVICE = "rating"
+    const val ACTION_AUTH_FLOW = "authorization flow"
+
+    //menu
+    const val ACTION_MENU_SERVICES = "services"
+    const val ACTION_MENU_DOCUMENTS = "documents"
+    const val ACTION_MENU_MENU = "menu"
+
+    //payment
+    const val PAYMENT_SDK_ERROR = "sdkError"
+}

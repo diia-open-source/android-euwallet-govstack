@@ -1,0 +1,802 @@
+package ua.govstack.digitalwallet.app.ui_base.components.molecule.input
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.isImeVisible
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import ua.govstack.digitalwallet.app.core.models.common_compose.mlc.input.InputTextMlc
+import ua.govstack.digitalwallet.app.ui_base.R
+import ua.govstack.digitalwallet.app.ui_base.components.DiiaResourceIcon
+import ua.govstack.digitalwallet.app.ui_base.components.atom.button.BtnPrimaryDefaultAtmData
+import ua.govstack.digitalwallet.app.ui_base.components.atom.icon.IconAtm
+import ua.govstack.digitalwallet.app.ui_base.components.atom.icon.IconAtmData
+import ua.govstack.digitalwallet.app.ui_base.components.atom.text.textwithparameter.TextWithParametersData
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.BaseScreen
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.DataActionWrapper
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.UIElementData
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.addAllIfNotNull
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.event.UIAction
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.event.UIActionKeysCompose
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.findAndChangeFirstByInstance
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.state.UIState
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.utils.resource.UiText
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.utils.resource.toDynamicString
+import ua.govstack.digitalwallet.app.ui_base.components.molecule.header.NavigationPanelMlcData
+import ua.govstack.digitalwallet.app.ui_base.components.molecule.message.AttentionMessageMlcData
+import ua.govstack.digitalwallet.app.ui_base.components.molecule.text.TitleLabelMlcData
+import ua.govstack.digitalwallet.app.ui_base.components.organism.bottom.BottomGroupOrgData
+import ua.govstack.digitalwallet.app.ui_base.components.organism.header.TopGroupOrgData
+import ua.govstack.digitalwallet.app.ui_base.components.organism.input.QuestionFormsOrgData
+import ua.govstack.digitalwallet.app.ui_base.components.theme.Black
+import ua.govstack.digitalwallet.app.ui_base.components.theme.BlackAlpha30
+import ua.govstack.digitalwallet.app.ui_base.components.theme.BlackAlpha54
+import ua.govstack.digitalwallet.app.ui_base.components.theme.DiiaTextStyle
+import ua.govstack.digitalwallet.app.ui_base.components.theme.Red
+import ua.govstack.digitalwallet.app.ui_base.components.theme.White
+import ua.govstack.digitalwallet.app.ui_base.util.toUiModel
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun TextInputMolecule(
+    modifier: Modifier = Modifier,
+    data: TextInputMoleculeData,
+    imeAction: ImeAction = ImeAction.Default,
+    localFocusManager: FocusManager = LocalFocusManager.current,
+    keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current,
+    onUIAction: (UIAction) -> Unit
+) {
+    val bringIntoErrorViewRequester = BringIntoViewRequester()
+    val bringIntoHintViewRequester = BringIntoViewRequester()
+    val bringIntoInputViewRequester = BringIntoViewRequester()
+    val inputCode: String? = data.inputCode
+    val mask: String? = data.mask?.asString()
+    val maskSymbolsCount: Int = mask?.count { c -> c == '#' } ?: (Int.MAX_VALUE - 1)
+    val dataValue = data.inputValue
+
+    var focusState by remember { mutableStateOf<UIState.Focus>(UIState.Focus.NeverBeenFocused) }
+    val focusRequester = remember { FocusRequester() }
+    var justFocused by remember { mutableStateOf(false) }
+    var dataValidationState by remember { mutableStateOf(data.validation) }
+
+    LaunchedEffect(key1 = data.validation) {
+        dataValidationState = data.validation
+    }
+    LaunchedEffect(key1 = data.mask) {
+        if (justFocused) {
+            justFocused = false
+        }
+    }
+    LaunchedEffect(Unit) {
+        if (!dataValue.isNullOrEmpty()) {
+            onUIAction(
+                UIAction(
+                    actionKey = data.actionKey,
+                    action = DataActionWrapper(
+                        type = data.actionKey,
+                        subtype = inputCode,
+                        resource = dataValue
+                    ),
+                    states = listOf(focusState, data.validation),
+                )
+            )
+        }
+    }
+    LaunchedEffect(Unit) {
+        if (data.showKeyboardFromStart) {
+            focusRequester.requestFocus()
+            keyboardController?.show()
+        }
+    }
+
+    LaunchedEffect(focusState) {
+        if (focusState == UIState.Focus.OutOfFocus) {
+            onUIAction.invoke(
+                UIAction(
+                    actionKey = UIActionKeysCompose.ITEM_FOCUS_LOST,
+                    action = DataActionWrapper(
+                        type = UIActionKeysCompose.ITEM_FOCUS_LOST,
+                        subtype = inputCode,
+                        resource = dataValue
+                    ),
+                    optionalId = data.id,
+                    states = listOf(UIState.Focus.OutOfFocus)
+                )
+            )
+        }
+    }
+
+    if (WindowInsets.isImeVisible) {
+        LaunchedEffect(Unit) {
+            if (data.validation == UIState.Validation.Failed) {
+                bringIntoErrorViewRequester.bringIntoView()
+            } else if (data.validation != UIState.Validation.Failed && !data.hintMessage.isNullOrEmpty()) {
+                bringIntoHintViewRequester.bringIntoView()
+            } else {
+                bringIntoInputViewRequester.bringIntoView()
+            }
+        }
+    }
+
+    BasicTextField(
+        modifier = modifier
+            .focusRequester(focusRequester)
+            .onFocusChanged {
+                focusState = when (focusState) {
+                    UIState.Focus.NeverBeenFocused -> {
+                        if (data.inputValue.isNullOrEmpty()) {
+                            if (it.isFocused || it.hasFocus) {
+                                UIState.Focus.FirstTimeInFocus
+                            } else {
+                                UIState.Focus.NeverBeenFocused
+                            }
+                        } else {
+                            UIState.Focus.OutOfFocus
+                        }
+                    }
+
+                    UIState.Focus.FirstTimeInFocus -> {
+                        UIState.Focus.OutOfFocus
+                    }
+
+                    UIState.Focus.InFocus -> UIState.Focus.OutOfFocus
+                    UIState.Focus.OutOfFocus -> UIState.Focus.InFocus
+                }
+            }
+            .bringIntoViewRequester(bringIntoInputViewRequester),
+        value = data.inputValue.orEmpty(),
+        enabled = data.isEnabled,
+        onValueChange = { newValue ->
+            justFocused = false
+            if (data.isEnabled && newValue.length < maskSymbolsCount + 1) {
+                onUIAction(
+                    UIAction(
+                        actionKey = data.actionKey,
+                        data = newValue,
+                        states = listOf(focusState, data.validation),
+                        optionalId = data.id
+                    )
+                )
+            }
+        },
+        textStyle = TextStyle(
+            fontFamily = FontFamily(Font(R.font.e_ukraine_regular)),
+            fontWeight = FontWeight.Normal,
+            fontSize = 14.sp,
+            lineHeight = 17.sp,
+            color = getColorForInput(data.isEnabled)
+        ),
+        keyboardOptions = KeyboardOptions(
+            imeAction = imeAction,
+            keyboardType = data.keyboardType
+        ),
+        keyboardActions = KeyboardActions(
+            onNext = {
+                localFocusManager.moveFocus(FocusDirection.Next)
+            },
+            onDone = {
+                keyboardController?.let {
+                    localFocusManager.clearFocus()
+                    it.hide()
+                }
+            }
+        ),
+        singleLine = true,
+        cursorBrush = SolidColor(getColorForInput(data.isEnabled)),
+        visualTransformation = data.mask?.asString()?.let {
+            TextVisualTransformation(it, maskSymbol = '#')
+        } ?: VisualTransformation.None,
+        decorationBox = @Composable { innerTextField ->
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(
+                        tag = data.componentId?.asString().orEmpty()
+                    ),
+            ) {
+                data.label?.let {
+                    Text(
+                        text = data.label,
+                        style = DiiaTextStyle.t4TextSmallDescription,
+                        color = getColorForLabel(data.validation)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(modifier = Modifier.weight(1f)) {
+                        if (data.inputValue.isNullOrEmpty()) {
+                            Text(
+                                text = data.placeholder.orEmpty(),
+                                style = DiiaTextStyle.t1BigText,
+                                color = getColorForPlaceholder(
+                                    focusState = focusState,
+                                    validationState = data.validation
+                                )
+                            )
+                        }
+
+                        innerTextField()
+                    }
+                    data.iconRight?.let { icon ->
+                        IconAtm(
+                            data = icon,
+                            modifier = Modifier
+                                .padding(start = 2.dp)
+                                .size(16.dp),
+                            onUIAction = onUIAction
+                        )
+                    }
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 6.dp)
+                        .height(2.dp)
+                        .background(
+                            getColorForBottomLine(
+                                inputValue = data.inputValue,
+                                focusState = focusState,
+                                validationState = data.validation
+                            )
+                        )
+                )
+
+                AnimatedVisibility(
+                    visible = data.validation == UIState.Validation.Failed &&
+                            (focusState != UIState.Focus.NeverBeenFocused)
+                ) {
+                    data.errorMessage?.let { errorMsg ->
+                        Text(
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                                .bringIntoViewRequester(bringIntoErrorViewRequester),
+                            text = errorMsg,
+                            style = DiiaTextStyle.t4TextSmallDescription,
+                            color = Red
+                        )
+                    }
+                }
+
+                AnimatedVisibility(visible = data.validation != UIState.Validation.Failed) {
+                    data.hintMessage?.let {
+                        Text(
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                                .bringIntoViewRequester(bringIntoHintViewRequester),
+                            text = data.hintMessage,
+                            style = DiiaTextStyle.t4TextSmallDescription,
+                            color = BlackAlpha54
+                        )
+                    }
+                }
+            }
+        }
+    )
+}
+
+private fun getColorForPlaceholder(
+    focusState: UIState.Focus,
+    validationState: UIState.Validation
+): Color {
+    return when (focusState) {
+        UIState.Focus.NeverBeenFocused, UIState.Focus.FirstTimeInFocus -> BlackAlpha54
+        UIState.Focus.InFocus, UIState.Focus.OutOfFocus -> {
+            when (validationState) {
+                UIState.Validation.Failed -> Red
+                else -> BlackAlpha54
+            }
+
+        }
+    }
+}
+
+private fun getColorForBottomLine(
+    inputValue: String?,
+    focusState: UIState.Focus,
+    validationState: UIState.Validation
+): Color {
+    return when (focusState) {
+        UIState.Focus.NeverBeenFocused -> BlackAlpha30
+
+        UIState.Focus.FirstTimeInFocus -> {
+            when (validationState) {
+                UIState.Validation.Failed -> Red
+                else -> Black
+            }
+        }
+
+        UIState.Focus.InFocus -> {
+            when (validationState) {
+                UIState.Validation.Failed -> Red
+                else -> Black
+            }
+        }
+
+        UIState.Focus.OutOfFocus -> {
+            when (validationState) {
+                UIState.Validation.Failed -> Red
+                else -> BlackAlpha30
+//                else -> if (inputValue.isNullOrEmpty()) BlackAlpha30 else Black
+            }
+        }
+    }
+}
+
+private fun getColorForInput(isEnabled: Boolean): Color {
+    return if (isEnabled) {
+        Black
+    } else {
+        BlackAlpha54
+    }
+}
+
+private fun getColorForLabel(validationState: UIState.Validation): Color {
+    return when (validationState) {
+        UIState.Validation.Failed -> Red
+        else -> Black
+    }
+}
+
+class TextVisualTransformation(val mask: String, val maskSymbol: Char) : VisualTransformation {
+
+    private val maxLength = mask.count { it == maskSymbol }
+
+    override fun filter(text: AnnotatedString): TransformedText {
+        val trimmed = if (text.length > maxLength) text.take(maxLength) else text
+
+        val annotatedString = buildAnnotatedString {
+            if (trimmed.isEmpty()) return@buildAnnotatedString
+
+            var maskIndex = 0
+            var textIndex = 0
+            while (textIndex < trimmed.length && maskIndex < mask.length) {
+                if (mask[maskIndex] != maskSymbol) {
+                    val nextDigitIndex = mask.indexOf(maskSymbol, maskIndex)
+                    append(mask.substring(maskIndex, nextDigitIndex))
+                    maskIndex = nextDigitIndex
+                }
+                append(trimmed[textIndex++])
+                maskIndex++
+            }
+        }
+
+        return TransformedText(annotatedString, PhoneOffsetMapper(mask, maskSymbol))
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is PhoneVisualTransformation) return false
+        if (mask != other.mask) return false
+        if (maskSymbol != other.maskSymbol) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return mask.hashCode()
+    }
+}
+
+data class TextInputMoleculeData(
+    val actionKey: String = UIActionKeysCompose.TEXT_INPUT,
+    val componentId: UiText? = null,
+    val id: String? = null,
+    var inputCode: String? = null,
+    val label: String? = null,
+    val placeholder: String? = null,
+    val mask: UiText? = null,
+    val inputValue: String? = null,
+    val hintMessage: String? = null,
+    val validationData: List<ValidationTextItem>? = null,
+    val validation: UIState.Validation = UIState.Validation.NeverBeenPerformed,
+    var errorMessage: String? = null,
+    val isEnabled: Boolean = true,
+    val keyboardType: KeyboardType = KeyboardType.Text,
+    val showKeyboardFromStart: Boolean = false,
+    val mandatory: Boolean? = null,
+    val iconRight: IconAtmData? = null
+) : InputFormItem() {
+
+    data class ValidationTextItem(
+        val regex: String,
+        val flags: List<String>,
+        val errorMessage: String
+    )
+
+    fun onInputChanged(newValue: String?, focusState: UIState.Focus? = null): TextInputMoleculeData {
+        if (newValue == null) return this
+
+        val numRegex = "^[+,0-9]"
+        val newValidationValue = if (this.id == "phoneNumber") {
+            newValue.filter { n -> numRegex.toRegex().matches(n.toString()) }
+        } else {
+            newValue
+        }
+
+        return this.copy(
+            inputValue = newValidationValue,
+            validation = when (this.id) {
+                "phoneNumber" -> {
+                    dataValidation(newValidationValue)
+                }
+
+                "email" -> {
+                    dataValidationEmail(newValue, focusState)
+                }
+
+                else -> {
+                    dataValidation(newValue)
+                }
+            }
+        )
+    }
+
+    private fun dataValidation(value: String): UIState.Validation {
+        var isMatches: Boolean? = null
+        if (validationData.isNullOrEmpty()) {
+            return UIState.Validation.Passed
+        }
+        this.validationData.forEach {
+            if (value.matches(Regex(it.regex))) {
+                isMatches = true
+            } else {
+                isMatches = false
+                this.errorMessage = it.errorMessage
+                return@forEach
+            }
+        }
+        return if (value.isEmpty()) {
+            UIState.Validation.NeverBeenPerformed
+        } else if (isMatches != null && isMatches == true) {
+            UIState.Validation.Passed
+        } else {
+            UIState.Validation.Failed
+        }
+    }
+
+    fun dataValidationEmail(value: String, focusState: UIState.Focus?): UIState.Validation {
+
+        var isMatches: Boolean? = null
+        if (!validationData.isNullOrEmpty()) {
+            for (validationTextItem in validationData) {
+                if (value.matches(Regex(validationTextItem.regex))) {
+                    isMatches = true
+                } else {
+                    isMatches = false
+                    this.errorMessage = validationTextItem.errorMessage
+                    break
+                }
+            }
+        }
+
+        return if (value.isEmpty()) {
+            UIState.Validation.NeverBeenPerformed
+        } else if (isMatches == true) {
+            UIState.Validation.Passed
+        } else if (focusState != UIState.Focus.OutOfFocus) {
+            UIState.Validation.InProgress
+        } else {
+            UIState.Validation.Failed
+        }
+    }
+}
+
+fun InputTextMlc.toUIModel(): TextInputMoleculeData {
+    this.let { inputText ->
+        val predefinedValue = inputText.value ?: ""
+        val validationList = mutableListOf<TextInputMoleculeData.ValidationTextItem>()
+        inputText.validation?.forEach {
+            validationList.add(
+                TextInputMoleculeData.ValidationTextItem(
+                    regex = it.regexp,
+                    flags = it.flags,
+                    errorMessage = it.errorMessage
+                )
+            )
+        }
+
+        //parse list of validation and check whether all of them match regex
+        //in case some is not passed, all validation is considered as Failed and errorMsg used
+        var errorMsg: String? = null
+        val validationState = if (predefinedValue.isEmpty()) {
+            UIState.Validation.NeverBeenPerformed
+        } else {
+            inputText.validation?.firstOrNull {
+                getValidationState(
+                    regex = it.regexp,
+                    input = predefinedValue
+                ) == UIState.Validation.Failed
+            }?.let { e ->
+                errorMsg = e.errorMessage
+                UIState.Validation.Failed
+            } ?: UIState.Validation.Passed
+        }
+
+        return TextInputMoleculeData(
+            componentId = inputText.componentId?.let { UiText.DynamicString(it) },
+            id = inputText.id ?: inputText.componentId?: "phoneNumber", //PHONE_NUMBER_VALIDATION_PATTERN
+            inputCode = inputCode,
+            label = inputText.label,
+            inputValue = inputText.value ?: "",
+            placeholder = inputText.placeholder,
+            validationData = validationList,
+            keyboardType = when (inputText.id) {
+                "phoneNumber" -> KeyboardType.Phone
+                "email" -> KeyboardType.Email
+                else -> KeyboardType.Text
+            },
+            iconRight = inputText.iconRight?.toUiModel(),
+            mask = inputText.maskCode?.let { UiText.DynamicString(it) },
+            validation = validationState,
+            errorMessage = errorMsg,
+            mandatory = this.mandatory
+        )
+    }
+}
+
+private fun getValidationState(regex: String?, input: String): UIState.Validation {
+    return if (input.matches(Regex(regex ?: ".*"))) {
+        UIState.Validation.Passed
+    } else {
+        UIState.Validation.Failed
+    }
+}
+
+@Composable
+@Preview
+fun TextInputMoleculePreview() {
+    val data = TextInputMoleculeData(
+        id = "",
+        label = LoremIpsum(6).values.joinToString(),
+        inputValue = "",
+        placeholder = "Placeholder",
+        hintMessage = LoremIpsum(6).values.joinToString(),
+        validationData = listOf(),
+        validation = UIState.Validation.NeverBeenPerformed,
+        iconRight = IconAtmData(code = DiiaResourceIcon.SCANNER.code)
+    )
+
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+
+    val state = remember {
+        mutableStateOf(data)
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(White), horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        TextInputMolecule(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .focusRequester(focusRequester), data = state.value, onUIAction = {
+                state.value = state.value.onInputChanged(it.data)
+            })
+
+        Button(modifier = Modifier.padding(bottom = 16.dp), onClick = {
+            focusManager.clearFocus()
+        }) {
+            Text("Click to remove focus from search")
+        }
+    }
+}
+
+@Composable
+@Preview
+fun TextInputMoleculePreview_Prefilled() {
+    val data = TextInputMoleculeData(
+        id = "",
+        label = LoremIpsum(6).values.joinToString(),
+        inputValue = "123456",
+        placeholder = "Placeholder",
+        hintMessage = LoremIpsum(50).values.joinToString(),
+        validationData = listOf(),
+        keyboardType = KeyboardType.Number,
+        validation = UIState.Validation.NeverBeenPerformed
+    )
+
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+
+    val state = remember {
+        mutableStateOf(data)
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(White), horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        TextInputMolecule(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .focusRequester(focusRequester), data = state.value, onUIAction = {
+                state.value = state.value.onInputChanged(it.data)
+            })
+
+        Button(modifier = Modifier.padding(bottom = 16.dp), onClick = {
+            focusManager.clearFocus()
+        }) {
+            Text("Click to remove focus from search")
+        }
+    }
+}
+
+@Preview
+@Composable
+fun InputWithScroll_Preview() {
+    val EMAIL_VALIDATION_PATTERN = "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+            "\\@" +
+            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+            "(" +
+            "\\." +
+            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+            ")+"
+
+    val toolbarData: SnapshotStateList<UIElementData> =
+        SnapshotStateList<UIElementData>().addAllIfNotNull(
+            TopGroupOrgData(
+                navigationPanelMlcData = NavigationPanelMlcData(
+                    title = UiText.DynamicString("Title"),
+                    isContextMenuExist = true
+                )
+            )
+        )
+
+    val bodyData: SnapshotStateList<UIElementData> =
+        SnapshotStateList<UIElementData>().addAllIfNotNull(
+            TitleLabelMlcData(label = "Some title"),
+            AttentionMessageMlcData(
+                icon = "",
+                title = "Title",
+                description = TextWithParametersData(
+                    text = UiText.DynamicString(LoremIpsum(1).values.joinToString()),
+                    parameters = emptyList()
+                )
+            ),
+            QuestionFormsOrgData(
+                title = null,
+                items = SnapshotStateList<InputFormItem>().apply {
+                    add(
+                        TextInputMoleculeData(
+                            id = "phone",
+                            label = "label",
+                            placeholder = "hint",
+                            inputValue = "",
+                            validationData = listOf(),
+                            keyboardType = KeyboardType.Number
+                        )
+                    )
+                    add(
+                        TextInputMoleculeData(
+                            id = "email",
+                            label = "label2",
+                            placeholder = "hint2",
+                            inputValue = "",
+                            validationData = listOf(
+                                TextInputMoleculeData.ValidationTextItem(
+                                    regex = EMAIL_VALIDATION_PATTERN,
+                                    flags = listOf(),
+                                    errorMessage = "error",
+                                )
+                            ),
+                            keyboardType = KeyboardType.Text
+                        )
+                    )
+                    add(
+                        TextInputMoleculeData(
+                            id = "other",
+                            label = "label3",
+                            placeholder = "# ##### #### #",
+                            inputValue = "12345678911",
+                            mask = "# ##### #### #".toDynamicString(),
+                            validationData = listOf(
+                                TextInputMoleculeData.ValidationTextItem(
+                                    regex = "^\\d{10,11}$",
+                                    flags = listOf("i"),
+                                    errorMessage = "error",
+                                )
+                            ),
+                            keyboardType = KeyboardType.Text,
+                            mandatory = true
+                        )
+                    )
+                }
+            )
+
+        )
+
+    val bottomData: SnapshotStateList<UIElementData> =
+        SnapshotStateList<UIElementData>().addAllIfNotNull(
+            BottomGroupOrgData(
+                primaryButton = BtnPrimaryDefaultAtmData(
+                    actionKey = "123",
+                    title = UiText.DynamicString("title"),
+                    interactionState = UIState.Interaction.Enabled
+                )
+            )
+        )
+
+    fun onNewValue(id: String?, data: String?) {
+        if (data == null) return
+        val index = bodyData.indexOfFirst { it is QuestionFormsOrgData }
+
+        bodyData.findAndChangeFirstByInstance<QuestionFormsOrgData> {
+            it.onInputChanged(id = id, newValue = data)
+        }
+
+        bottomData.findAndChangeFirstByInstance<BottomGroupOrgData> { item ->
+            if (index != -1) {
+                (bodyData[index] as QuestionFormsOrgData).isFormFilledAndValid().let {
+                    item.activateButtonsIgnoreCheckbox(it)
+                }
+            } else {
+                item
+            }
+        }
+    }
+
+    BaseScreen(
+        toolbar = toolbarData,
+        body = bodyData,
+        bottom = bottomData,
+        onEvent = {
+            onNewValue(it.optionalId, it.data)
+        }
+    )
+}

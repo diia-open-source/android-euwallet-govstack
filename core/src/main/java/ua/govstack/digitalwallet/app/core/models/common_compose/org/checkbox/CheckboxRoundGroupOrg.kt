@@ -1,0 +1,34 @@
+package ua.govstack.digitalwallet.app.core.models.common_compose.org.checkbox
+
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+import ua.govstack.digitalwallet.app.core.models.common_compose.mlc.checkbox.CheckIconMlc
+import ua.govstack.digitalwallet.app.core.models.common_compose.mlc.checkbox.CheckboxRoundMlc
+
+@JsonClass(generateAdapter = true)
+data class CheckboxRoundGroupOrg(
+    @Json(name = "componentId")
+    val componentId: String?,
+    @Json(name = "id")
+    val id: String?,
+    @Json(name = "inputCode")
+    val inputCode: String?,
+    @Json(name = "title")
+    val title: String?,
+    @Json(name = "mandatory")
+    val mandatory: Boolean?,
+    @Json(name = "blocker")
+    val blocker: Boolean?,
+    @Json(name = "condition")
+    val condition: String?,
+    @Json(name = "items")
+    val items: List<CbItem>
+)
+
+@JsonClass(generateAdapter = true)
+data class CbItem(
+    @Json(name = "checkboxRoundMlc")
+    val checkboxRoundMlc: CheckboxRoundMlc?,
+    @Json(name = "checkIconMlc")
+    val checkIconMlc: CheckIconMlc?
+)

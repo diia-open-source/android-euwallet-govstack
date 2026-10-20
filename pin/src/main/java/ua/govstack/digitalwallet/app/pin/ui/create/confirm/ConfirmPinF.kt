@@ -1,0 +1,143 @@
+package ua.govstack.digitalwallet.app.pin.ui.create.confirm
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import ua.govstack.digitalwallet.app.core.ui.dynamicdialog.ActionsConst
+import ua.govstack.digitalwallet.app.core.util.extensions.fragment.registerForTemplateDialogNavResult
+import ua.govstack.digitalwallet.app.core.util.extensions.fragment.setNavigationResult
+import ua.govstack.digitalwallet.app.pin.helper.PinHelper
+import ua.govstack.digitalwallet.app.pin.ui.create.compose.CreatePinScreen
+import ua.govstack.digitalwallet.app.pin.util.PinConst.ACTION_CODE_HOME
+import ua.govstack.digitalwallet.app.ui_base.components.infrastructure.collectAsEffect
+import ua.govstack.digitalwallet.app.ui_base.navigation.BaseNavigation
+import ua.govstack.digitalwallet.app.ui_base.util.navigation.openTemplateDialog
+import javax.inject.Inject
+
+@AndroidEntryPoint
+class ConfirmPinF : Fragment() {
+
+    private val viewModel: ConfirmPinVM by viewModels()
+    private val args: ConfirmPinFArgs by navArgs()
+    private var composeView: ComposeView? = null
+
+    @Inject
+    lateinit var pinHelper: PinHelper
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.doInit(args.flowType, args.pin)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        composeView = ComposeView(requireContext())
+        return composeView
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        composeView?.setContent {
+            val uiDataElements = viewModel.uiData
+
+            viewModel.apply {
+                navigation.collectAsEffect { navigation ->
+                    when (navigation) {
+                        is ConfirmPinVM.Navigation.ToAlternativeAuthSetup -> {
+                            navigateToBiometric(navigation.pin)
+                        }
+
+                        is ConfirmPinVM.Navigation.PinCreation -> {
+                            completeFlow(navigation.pin)
+                        }
+
+                        is BaseNavigation.Back -> {
+                            findNavController().popBackStack()
+                        }
+                    }
+                }
+                showTemplateDialog.collectAsEffect {
+                    openTemplateDialog(it.peekContent())
+                }
+                lifecycleScope.launch {
+                    accessibilityMessage.collect { messageRes ->
+                        messageRes?.let {
+                            requireView().post {
+                                requireView().announceForAccessibility(getString(it))
+                                viewModel.clearAccessibilityMessage()
+                            }
+                        }
+                    }
+                }
+            }
+            CreatePinScreen(
+                data = uiDataElements,
+                shouldAnnounceAccessibility = true,
+                useGradientBg = true,
+                onUIAction = { viewModel.onUIAction(it) }
+            )
+        }
+        registerForTemplateDialogNavResult { action ->
+            if (action == ActionsConst.DIALOG_ACTION_CODE_SKIP) {
+                findNavController().popBackStack()
+            }
+            when (action) {
+                ActionsConst.DIALOG_DEAL_WITH_IT -> {
+                    viewModel.matchedPin.value?.let { completeFlow(it) }
+                }
+                ACTION_CODE_HOME -> {
+                    closeFlow()
+                }
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        composeView = null
+    }
+
+    private fun completeFlow(pin: String) {
+        setNavigationResult(
+            arbitraryDestination = args.resultDestinationId,
+            key = args.resultKey,
+            data = pin
+        )
+        findNavController().popBackStack(args.resultDestinationId, false)
+    }
+
+    private fun closeFlow() {
+        setNavigationResult(
+            arbitraryDestination = args.resultDestinationId,
+            key = RESULT_KEY_BACK,
+            data = ActionsConst.DIALOG_ACTION_REFRESH
+        )
+        findNavController().popBackStack(args.resultDestinationId, false)
+    }
+
+    private fun navigateToBiometric(pin: String) {
+        pinHelper.navigateToAlternativeAuthSetup(
+            host = this,
+            resultDestinationId = args.resultDestinationId,
+            resultKey = args.resultKey,
+            pin = pin,
+        )
+    }
+
+    private companion object {
+        const val RESULT_KEY_BACK = "GenerateSignatureF.RESULT_KEY_BACK"
+    }
+}

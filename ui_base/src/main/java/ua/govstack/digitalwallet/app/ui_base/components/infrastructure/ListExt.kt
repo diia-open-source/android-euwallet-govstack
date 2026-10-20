@@ -1,0 +1,60 @@
+package ua.govstack.digitalwallet.app.ui_base.components.infrastructure
+
+import androidx.compose.runtime.snapshots.SnapshotStateList
+
+fun <T> SnapshotStateList<T>.addIfNotNull(element: T?): SnapshotStateList<T> where T : UIElementData {
+    if (element != null) {
+        this.add(element)
+    }
+    return this
+}
+
+fun <T> SnapshotStateList<T>.addAllIfNotNull(vararg elements: T?): SnapshotStateList<T> where T : UIElementData {
+    elements.forEach {
+        it?.let {
+            this.add(it)
+        }
+    }
+    return this
+}
+
+fun <T> SnapshotStateList<T>.addAllFromListIfNotNull(list: List<T>): SnapshotStateList<T> where T : UIElementData {
+    list.forEach {
+        it?.let {
+            this.add(it)
+        }
+    }
+    return this
+}
+
+inline fun <reified T> SnapshotStateList<UIElementData>.findAndChangeFirstByInstance(action: (T) -> UIElementData) {
+    val index = this.indexOfFirst { it is T }
+
+    if (index == -1) {
+        return
+    } else {
+        this[index] = action.invoke(this[index] as T)
+    }
+}
+
+inline fun <reified T : UIElementData> SnapshotStateList<UIElementData>.update(
+    noinline predicate: (T) -> Boolean = { true },
+    action: (T) -> UIElementData
+) {
+    val index = this.indexOfFirst { element ->
+        element is T && predicate(element)
+    }
+
+    if (index != -1) {
+        this[index] = action(this[index] as T)
+    }
+}
+
+inline fun <reified T> SnapshotStateList<UIElementData>.firstOrNull(): T? {
+    val index = this.indexOfFirst { it is T }
+    return if (index == -1) {
+        null
+    } else {
+        this[index] as T
+    }
+}

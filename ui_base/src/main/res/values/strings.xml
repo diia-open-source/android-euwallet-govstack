@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="back">Назад</string>
+    <string name="context_menu">Контекстне меню</string>
+    <string name="details">Деталі</string>
+    <string name="decrease_value">Зменшити значення</string>
+    <string name="increase_value">Збільшити значення</string>
+    <string name="select_date">Вкажіть дату</string>
+    <string name="select_time">Вкажіть час</string>
+    <string name="day_placeholder">дд</string>
+    <string name="month_placeholder">мм</string>
+    <string name="year_placeholder">рррр</string>
+    <string name="clean_search_field">Очистити поле пошуку</string>
+    <string name="notification_channel_messages">Повідомлення</string>
+    <string name="loading_ellipsized">Завантаження…</string>
+    <string name="close">Close</string>
+    <string name="close_rectangle">Очистити</string>
+    <string name="qr_code">QR code</string>
+    <string name="barcode">Штрихкод</string>
+    <string name="copy_to_clipboard">Скопіювати</string>
+    <string name="not_handled_icon">Відсутній опис іконки</string>
+    <string name="date_time_picker_confirm_button_label">Обрати</string>
+    <string name="date_time_picker_cancel_button_label">Скасувати</string>
+    <string name="menu">Menu</string>
+    <string name="log_out">Log out</string>
+
+    <!--    NFC  -->
+    <string name="mrz_scanner_body_test_tag">body_scan</string>
+
+    <string name="create_pin_screen_ellips_test_tag">ellips_stepper_pincreate</string>
+    <string name="create_pin_screen_btn_num_test_tag">btn_num_pincreate</string>
+
+    <string name="confirm_pin_screen_title_test_tag">title_pinconfirm</string>
+    <string name="confirm_pin_screen_ellips_test_tag">ellips_stepper_pinconfirm</string>
+    <string name="confirm_pin_screen_btn_num_test_tag">btn_num_pinconfirm</string>
+
+    <string name="enter_pin_screen_title_test_tag">title_pinenter</string>
+    <string name="enter_pin_screen_ellips_test_tag">ellips_stepper_pinenter</string>
+    <string name="enter_pin_screen_btn_num_test_tag">btn_num_pinenter</string>
+
+    <!--    Login  -->
+    <string name="error_message_notifications_icon">👌</string>
+    <string name="error_message_notifications_empty">У вас немає нових повідомлень.</string>
+
+    <string name="doc_stack_order_group_count">%d документи</string>
+
+    <string name="no_internet">No internet access. Data is not updated • No internet access. Data is not updated • No internet access. Data is not updated •</string>
+
+    <!--  Menu  -->
+    <string name="menu_item_settings_test_tag">settings</string>
+    <string name="menu_group_support_test_tag">group_support</string>
+    <string name="menu_btn_primary_exit_test_tag">btn_primary_exit</string>
+    <string name="menu_title_menu_test_tag">title_menu</string>
+    <string name="menu_item_qr_code_scan_test_tag">qr_code_scan</string>
+    <string name="menu_group_transaction_log_test_tag">group_transaction_log</string>
+    <string name="menu_group_settings_and_support_test_tag">group_settings_and_support</string>
+
+    <!--  Home  -->
+    <string name="home_tab_bar_test_tag">tab_bar</string>
+    <string name="home_tab_documents_test_tag">documents</string>
+    <string name="home_tab_menu_test_tag">menu</string>
+
+
+    <!--  Docs  -->
+    <string name="stack_order_title_test_tag">title_documents</string>
+    <string name="stack_order_docs_list_test_tag">docs_list</string>
+
+
+    <!--  Calendar  -->
+    <string name="calendar_org_stub_msg_icon">🗓</string>
+    <string name="calendar_org_stub_msg_title">Спочатку оберіть дату реєстрації шлюбу</string>
+
+    <!-- Name -->
+    <string name="ukraine_validation_input_error">Введіть інформацію українською мовою.</string>
+
+    <!--   Doc Stack     -->
+    <string name="stack_order_title">Change the order</string>
+
+    <string name="remove_doc_action">Delete document</string>
+    <string name="full_info">Full information</string>
+    <string name="doc_id_copied"><b>Number copied</b></string>
+
+    <string name="invincibility_accessibility_map_download_button">%1$s, завантажити мапу на пристрій</string>
+    <string name="invincibility_accessibility_try_again_button">Спробувати ще</string>
+    <string name="invincibility_accessibility_delete_map_button">Видалити мапу з пристрою</string>
+    <string name="invincibility_accessibility_open_map_button">%1$s, перейти до мапи</string>
+    <string name="invincibility_accessibility_update_map_button">Оновити</string>
+
+    <string name="filter_icon_description">Фільтр</string>
+    <string name="ellipse_menu_icon_description">Контекстне меню</string>
+    <string name="copy_icon_description">Скопіювати номер</string>
+    <string name="stack_icon_description">Переглянути наявні документи цього типу</string>
+    <string name="ellipseInfo_icon_description">Інформація</string>
+    <string name="logo_diia_icon_description">Чорний логотип Дія</string>
+    <string name="logo_diia_stroke_icon_description">Прозорий логотип Дія</string>
+    <string name="medium_plus_icon_description">Квадрат зі знаком плюс</string>
+    <string name="logo_mc_icon_description">Мастеркард</string>
+    <string name="logo_visa_white_icon_description">Віза</string>
+
+    <string name="generic_error_description">If the issue persists, please contact customer support</string>
+    <string name="generic_network_error_message">You are not connected to the internet</string>
+
+</resources>
